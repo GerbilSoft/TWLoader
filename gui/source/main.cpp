@@ -924,12 +924,12 @@ int main()
 	snprintf(romsel_counter2fc, sizeof(romsel_counter2fc), "%d", fcfiles.size());
 
 	// Download box art
-	if (checkWifiStatus()) {
+	if (aptMainLoop() && checkWifiStatus()) {
 		downloadBoxArt();
 	}
 
 	// Cache banner data
-	for (bnriconnum = 0; bnriconnum < files.size(); bnriconnum++) {
+	for (bnriconnum = 0; bnriconnum < files.size() && aptMainLoop(); bnriconnum++) {
 		static const char title[] = "Now checking if banner data exists (SD Card)...";
 		char romsel_counter1[16];
 		snprintf(romsel_counter1, sizeof(romsel_counter1), "%d", bnriconnum+1);
@@ -950,7 +950,7 @@ int main()
 		fclose(f_nds_file);
 	}
 
-	if (checkWifiStatus()) {
+	if (aptMainLoop() && checkWifiStatus()) {
 		if (settings.ui.autodl && (checkUpdate() == 0)) {
 			DownloadTWLoaderCIAs();
 		}
@@ -1023,8 +1023,7 @@ int main()
 	memset(param, 0, sizeof(param));
 	memset(hmac, 0, sizeof(hmac));
 	// Loop as long as the status is not exit
-	while(run && aptMainLoop()) {
-	//while(run) {
+	while (run && aptMainLoop()) {
 		// Scan hid shared memory for input events
 		hidScanInput();
 		

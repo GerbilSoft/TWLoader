@@ -417,7 +417,7 @@ void downloadBoxArt(void)
 	snprintf(romsel_counter2fc, sizeof(romsel_counter2fc), "%d", fcfiles.size());
 
 	LogFM("Main.downloadBoxArt", "Checking box art (SD Card).");
-	for (size_t boxartnum = 0; boxartnum < files.size(); boxartnum++) {
+	for (size_t boxartnum = 0; boxartnum < files.size() && aptMainLoop(); boxartnum++) {
 		static const char title[] = "Now checking box art if exists (SD Card)...";
 		char romsel_counter1[16];
 		snprintf(romsel_counter1, sizeof(romsel_counter1), "%d", boxartnum+1);
@@ -470,7 +470,7 @@ void downloadBoxArt(void)
 	}
 	
 	LogFM("Main.downloadBoxArt", "Checking box art (Flashcard).");
-	for (size_t boxartnum = 0; boxartnum < fcfiles.size(); boxartnum++) {
+	for (size_t boxartnum = 0; boxartnum < fcfiles.size() && aptMainLoop(); boxartnum++) {
 		static const char title[] = "Now checking box art if exists (Flashcard)...";
 		char romsel_counter1[16];
 		snprintf(romsel_counter1, sizeof(romsel_counter1), "%d", boxartnum+1);
