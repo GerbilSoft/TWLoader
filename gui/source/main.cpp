@@ -70,7 +70,7 @@ static char* bnriconpath[20] = { };
 // bnricontex[]: 0-9 == regular; 10-19 == .nds icons only
 static sf2d_texture *bnricontex[20] = { };
 static char* boxartpath[20] = { };
-static sf2d_texture *boxarttex[6] = { };
+static sf2d_texture *boxarttex[20] = { };
 
 int bnriconnum = 0;
 int bnriconframenum = 0;
@@ -388,8 +388,7 @@ static void ChangeBoxArtNo(void) {
 	const int idx = boxartnum - (pagenum * 20);
 	if (idx >= 0 && idx < 20) {
 		// Selected boxart is on the current page.
-		// NOTE: Only 6 slots for boxart.
-		boxarttexnum = boxarttex[idx % 6];
+		boxarttexnum = boxarttex[idx];
 	}
 }
 
@@ -474,9 +473,8 @@ static void LoadBoxArt(void) {
 	const int idx = boxartnum - (pagenum * 20);
 	if (idx >= 0 && idx < 20) {
 		// Selected boxart is on the current page.
-		// NOTE: Only 6 slots for boxart.
-		sf2d_free_texture(boxarttex[idx % 6]);
-		boxarttex[idx % 6] = sfil_load_PNG_file(boxartpath[idx], SF2D_PLACE_RAM); // Box art
+		sf2d_free_texture(boxarttex[idx]);
+		boxarttex[idx] = sfil_load_PNG_file(boxartpath[idx], SF2D_PLACE_RAM); // Box art
 	}
 }
 
@@ -1061,6 +1059,7 @@ int main()
 						} else {
 							StoreBoxArtPath("romfs:/graphics/boxart_unknown.png");
 						}
+						LoadBoxArt();
 					}
 				} else {
 					/* sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
@@ -1095,13 +1094,10 @@ int main()
 						} else {
 							StoreBoxArtPath("romfs:/graphics/boxart_unknown.png");
 						}
+						LoadBoxArt();
 					}
 				}
-				
-				// Load up to 6 boxarts.
-				for (boxartnum = pagenum*20; boxartnum < 6+pagenum*20; boxartnum++) {
-					LoadBoxArt();
-				}
+
 				boxarttexloaded = true;
 				boxartnum = 0+pagenum*20;
 			}
@@ -1312,20 +1308,6 @@ int main()
 				boxartXmovepos += 18;
 				if (dspfirmfound) { sfx_select->stop(); }
 				if (dspfirmfound) { sfx_select->play(); }
-				// Load the previous box art
-				if ( cursorPosition == 3+pagenum*20 ||
-				cursorPosition == 6+pagenum*20 ||
-				cursorPosition == 9+pagenum*20 ||
-				cursorPosition == 12+pagenum*20 ||
-				cursorPosition == 15+pagenum*20 ||
-				cursorPosition == 18+pagenum*20 ) {
-					boxartnum = cursorPosition-1;
-					LoadBoxArt();
-					boxartnum--;
-					LoadBoxArt();
-					boxartnum--;
-					LoadBoxArt();
-				}
 			} else {
 				if (!cursorPositionset) {
 					cursorPosition--;
@@ -1378,20 +1360,6 @@ int main()
 				storedcursorPosition = cursorPosition;
 				if (dspfirmfound) { sfx_stop->stop(); }
 				if (dspfirmfound) { sfx_stop->play(); }
-				// Load the next box art
-				if ( cursorPosition == 4+pagenum*20 ||
-				cursorPosition == 7+pagenum*20 ||
-				cursorPosition == 10+pagenum*20 ||
-				cursorPosition == 13+pagenum*20 ||
-				cursorPosition == 16+pagenum*20 ||
-				cursorPosition == 19+pagenum*20 ) {
-					boxartnum = cursorPosition+2;
-					LoadBoxArt();
-					boxartnum++;
-					LoadBoxArt();
-					boxartnum++;
-					LoadBoxArt();
-				}
 			} else if (titleboxXmovetimer == 8) {
 				titleboxXmovepos -= 8;
 				boxartXmovepos -= 18;
@@ -2233,7 +2201,7 @@ int main()
 		sf2d_free_texture(bnricontex[i]);
 		free(boxartpath[i]);
 	}
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 20; i++) {
 		sf2d_free_texture(boxarttex[i]);
 	}
 
