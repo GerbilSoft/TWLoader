@@ -16,7 +16,9 @@
 #include <sf2d.h>
 #include <sfil.h>
 #include <sftd.h>
+
 #include "ptmu_x.h"
+#include "ns_x.h"
 
 //#include <citrus/app.hpp>
 //#include <citrus/battery.hpp>
@@ -713,6 +715,7 @@ static inline sf2d_texture *carttex(void)
 int main()
 {
 	aptInit();
+	nsxInit();
 	cfguInit();
 	amInit();
 	ptmuInit();	// For battery status
@@ -2224,15 +2227,38 @@ int main()
 			settingsMoveCursor(hDown);
 		}
 
-		while(applaunchon){
-			// Prepare for the app launch
-			APT_PrepareToDoApplicationJump(0, 0x0004800554574C44ULL, MEDIATYPE_NAND); // TWLNAND side's title ID
-			// TODO: Launch TWL carts directly.
-			// Note that APT_PrepareToDoApplicationJump() doesn't
-			// seem to work right with NTR/TWL carts...
-			// APT_PrepareToDoApplicationJump(0, 0x0000000000000000ULL, MEDIATYPE_GAME_CARD);
-			// Tell APT to trigger the app launch and set the status of this app to exit
-			APT_DoApplicationJump(param, sizeof(param), hmac);
+		if (applaunchon) {
+			//gamecardGetTWLBannerHMAC
+			// Prepare for the app launch.
+			u64 tid = 0x0004800554574C44ULL;	// TWLNAND side's title ID
+			FS_MediaType mediaType = MEDIATYPE_NAND;
+			if (!settings.twl.forwarder && settings.twl.launchslot1 &&
+			    gamecardGetType() >= CARD_TYPE_TWL_ENH)
+			{
+				// Launch the game card directly.
+				const u8 *sha1_hmac = gamecardGetTWLBannerHMAC();
+				if (sha1_hmac) {
+					// DSi or DSi-enhanced.
+					// Load the SHA1 HMAC.
+					if (R_SUCCEEDED(NSSX_SetTWLBannerHMAC(sha1_hmac))) {
+						// SHA1 HMAC set.
+						// Boot the cartridge.
+						tid = 0;
+						mediaType = MEDIATYPE_GAME_CARD;
+					}
+				}
+			}
+
+			while (true) {
+				// Prepare for the app launch
+				APT_PrepareToDoApplicationJump(0, tid, mediaType);
+				// TODO: Launch TWL carts directly.
+				// Note that APT_PrepareToDoApplicationJump() doesn't
+				// seem to work right with NTR/TWL carts...
+				// APT_PrepareToDoApplicationJump(0, 0x0000000000000000ULL, MEDIATYPE_GAME_CARD);
+				// Tell APT to trigger the app launch and set the status of this app to exit
+				APT_DoApplicationJump(param, sizeof(param), hmac);
+			}
 		}
 	//}	// run
 	}	// aptMainLoop
@@ -2251,6 +2277,7 @@ int main()
 	ptmuExit();
 	amExit();
 	cfguExit();
+	nsxExit();
 	aptExit();
 
 	// Unload settings screen textures.

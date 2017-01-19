@@ -63,4 +63,11 @@ sf2d_texture *gamecardGetIcon(void);
  */
 std::vector<std::wstring> gamecardGetText(void);
 
+/**
+ * Get the SHA1 HMAC of the icon/banner area.
+ * This is present in DSi and later DS ROMs.
+ * @return Pointer to the SHA1 HMAC (20 bytes), or nullptr if not present.
+ */
+const u8 *gamecardGetTWLBannerHMAC(void);
+
 #endif /* TWLOADER_GAMECARD_H */

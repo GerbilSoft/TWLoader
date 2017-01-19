@@ -21,6 +21,9 @@ static union {
 } twl_gameid;	// 4-character game ID
 bool twl_inserted = false;
 static GameCardType twl_card_type = CARD_TYPE_UNKNOWN;
+
+// NTR/TWL only
+static sNDSHeader twl_header;
 static char twl_product_code[16] = { };
 static u8 twl_revision = 0xFF;
 static sf2d_texture *twl_icon = NULL;
@@ -82,8 +85,7 @@ bool gamecardPoll(bool force)
 	// Based on FBI 2.4.7's listtitles.c, task_populate_titles_add_twl()
 
 	// Get the NDS ROM header.
-	sNDSHeader header;
-	if (R_FAILED(FSUSER_GetLegacyRomHeader(MEDIATYPE_GAME_CARD, 0, (u8*)&header))) {
+	if (R_FAILED(FSUSER_GetLegacyRomHeader(MEDIATYPE_GAME_CARD, 0, (u8*)&twl_header))) {
 		// Unable to read the ROM header.
 		gamecardClearCache();
 		return true;
@@ -91,12 +93,12 @@ bool gamecardPoll(bool force)
 
 	// Get the game ID from the ROM header.
 	u32 gameid;
-	memcpy(&gameid, header.gameCode, sizeof(gameid));
+	memcpy(&gameid, twl_header.gameCode, sizeof(gameid));
 	twl_gameid.d = gameid;
 
 	// Card type.
 	const char *prefix;
-	switch (header.unitCode & 0x03) {
+	switch (twl_header.unitCode & 0x03) {
 		case 0x00:
 		default:
 			twl_card_type = CARD_TYPE_NTR;
@@ -116,7 +118,7 @@ bool gamecardPoll(bool force)
 	snprintf(twl_product_code, sizeof(twl_product_code), "%s-P-%.4s", prefix, twl_gameid.id4);
 
 	// Revision.
-	twl_revision = header.romversion;
+	twl_revision = twl_header.romversion;
 
 	// Get the banner.
 	sNDSBanner ndsBanner;
@@ -185,4 +187,38 @@ sf2d_texture *gamecardGetIcon(void)
 vector<wstring> gamecardGetText(void)
 {
 	return twl_text;
+}
+
+/**
+ * Get the SHA1 HMAC of the icon/banner area.
+ * This is present in DSi and later DS ROMs.
+ * @return Pointer to the SHA1 HMAC (20 bytes), or nullptr if not present.
+ */
+const u8 *gamecardGetTWLBannerHMAC(void)
+{
+	if (!twl_inserted ||
+	    twl_card_type <= CARD_TYPE_UNKNOWN ||
+	    twl_card_type >= CARD_TYPE_CTR)
+	{
+		// No TWL banner SHA1 HMAC.
+		return NULL;
+	}
+
+	// Make sure the SHA1 HMAC isn't all zeroes.
+	bool nonzero = false;
+	for (int i = 20-1; i >= 0; i--) {
+		if (twl_header.sha1_hmac_icon_title[i] != 0) {
+			// Non-zero.
+			nonzero = true;
+			break;
+		}
+	}
+
+	if (!nonzero) {
+		// SHA1 HMAC is all zeroes.
+		return NULL;
+	}
+
+	// Return the SHA1 HMAC.
+	return twl_header.sha1_hmac_icon_title;
 }

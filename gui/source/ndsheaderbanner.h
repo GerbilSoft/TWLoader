@@ -120,13 +120,22 @@ typedef struct {
 
 	u32 debugRomSource;			//!< debug ROM offset.
 	u32 debugRomSize;			//!< debug size.
-	u32 debugRomDestination;	//!< debug RAM destination.
+	u32 debugRomDestination;		//!< debug RAM destination.
 	u32 offset_0x16C;			//reserved?
 
-	u8 zero[0x90];
+	// 0x170
+	u8 reserved_170h[16];
 
-	// TODO: DSi-specific fields.
-	u8 dsi[0x1B4];
+	// 0x180
+	// TODO: Other DSi-specific fields.
+	u8 reserved_180h[0x1BC];
+
+	// 0x33C: SHA1 HMAC of the icon/title.
+	u8 sha1_hmac_icon_title[20];
+
+	// 0x350
+	// TODO: Other DSi-specific fields.
+	u8 reserved_350h[100];
 } sNDSHeader;
 
 typedef struct {
@@ -139,6 +148,7 @@ typedef struct {
 
 // Make sure the banner size is correct.
 static_assert(sizeof(sNDSHeader) == 0x3B4, "sizeof(sNDSHeader) is not 0x3B4 bytes");
+static_assert(offsetof(sNDSHeader, sha1_hmac_icon_title) == 0x33C, "sNDSHeader.sha1_hmac_icon_title is not at 0x33C");
 
 
 /*!

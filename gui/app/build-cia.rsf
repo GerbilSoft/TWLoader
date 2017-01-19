@@ -231,6 +231,7 @@ AccessControlInfo:
    #- mic:u
    #- ndm:u
    #- news:s
+   - ns:s
    - nwm::EXT
    - nwm::UDS
    - ptm:sysm
