@@ -1040,7 +1040,7 @@ static void drawMenuDialogBox(void)
 			{ 23,  89, &settings.pergame.cpuspeed, "ARM9 CPU Speed:", {"67 MHz (NTR)", "133 MHz (TWL)"}},
 			{161,  89, &settings.pergame.extvram, "VRAM boost:", {"Off", "On"}},
 			{ 23, 129, &settings.pergame.lockarm9scfgext, "Lock ARM9 SCFG_EXT:", {"Off", "On"}},
-			{161, 129, &settings.pergame.donor, "Set as donor ROM", {" ", " "}},
+			{161, 129, &settings.pergame.donor, "Set as donor ROM", {NULL, NULL}},
 			{23, 169, NULL, "Set LED color", {NULL, NULL}},
 		};
 		
@@ -1055,7 +1055,7 @@ static void drawMenuDialogBox(void)
 
 			const char *title = buttons[i].title;
 			const char *value_desc = "Default";
-			if(i != 4){
+			if (i < 3) {
 				switch (*(buttons[i].value)) {
 					case -1:
 					default:
@@ -1082,7 +1082,7 @@ static void drawMenuDialogBox(void)
 			y += 16;
 
 			// Draw the value.
-			if(i != 4){
+			if (i < 3) {
 				w = sftd_get_text_width(font, 12, value_desc);
 				x = ((132 - w) / 2) + buttons[i].x;
 				sftd_draw_text(font, x, y, RGBA8(0, 0, 0, 255), 12, value_desc);
