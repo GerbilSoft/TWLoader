@@ -55,7 +55,7 @@ VERSION_MICRO := 1
 #---------------------------------------------------------------------------------
 TARGET		:=	TWLoader
 BUILD		:=	build
-SOURCES		:=	source source/img source/json
+SOURCES		:=	source source/json
 DATA		:=	data
 INCLUDES	:=	include
 ROMFS		:=	romfs
