@@ -1172,13 +1172,18 @@ bool settingsMoveCursor(u32 hDown)
 			subscreenmode = SUBSCREEN_MODE_FRONTEND;
 			sfx = sfx_select;
 		} else if (hDown & KEY_A) {
-			std::string &path = (cursor_pos[4] == 0) ? settings.ui.romfolder : settings.ui.fcromfolder;
-			std::string newPath = keyboardInput(path.c_str());
+			std::string oldPath = (cursor_pos[4] == 0) ? settings.ui.romfolder : settings.ui.fcromfolder;
+			std::string newPath = keyboardInput(oldPath.c_str());
 
-			if (path != newPath) {
+			if (!newPath.empty() && oldPath != newPath) {
+				if (cursor_pos[4] == 0) {
+					settings.ui.romfolder = newPath;
+				} else {
+					settings.ui.fcromfolder = newPath;
+				}
+
 				// Need to restart the application for changes to take effect.
 				// TODO: Make this unnecessary.
-				path = newPath;
 
 				// Buffers for APT_DoApplicationJump().
 				u8 param[0x300];
