@@ -520,7 +520,7 @@ void settingsDrawBottomScreen(void)
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText(Xpos, Ypos, 0.55, 0.55, false, "Rom path");
+		renderText(Xpos, Ypos, 0.55, 0.55, false, "ROM path");
 		renderText(XposValue, Ypos, 0.55, 0.55, false, "SD:/");
 		renderText(XposValue+32, Ypos, 0.50, 0.55, false, settings.ui.romfolder.c_str());
 		Ypos += 12;
@@ -826,39 +826,31 @@ void settingsDrawBottomScreen(void)
 		renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_AB_SAVE_RETURN));
 	} else if (subscreenmode == SUBSCREEN_MODE_CHANGE_ROM_PATH) {
 		title = "ROM path location";
-	
+		u32 sd_color, flashcard_color;
 		if (cursor_pos[4] == 0){
 			// Selected SD
-			setTextColor(SET_ALPHA(color_data->color, 255));
-			renderText(24, 40, 0.55, 0.55, false, "SD ROM location:");
-			renderText(30, 52, 0.55, 0.55, false, "SD:/");
-			renderText(52, 52, 0.55, 0.55, false, settings.ui.romfolder.c_str());
-			
-			// Unselected Flashcard
-			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText(24, 66, 0.55, 0.55, false, "Flashcard INI location:");
-			renderText(30, 78, 0.55, 0.55, false, "SD:/");
-			renderText(52, 78, 0.55, 0.55, false, settings.ui.fcromfolder.c_str());
-			
-		}else if (cursor_pos[4] == 1){
-			// Unselected SD
-			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText(24, 40, 0.55, 0.55, false, "SD ROM location:");
-			renderText(30, 52, 0.55, 0.55, false, "SD:/");
-			renderText(52, 52, 0.55, 0.55, false, settings.ui.romfolder.c_str());
-			
+			sd_color = SET_ALPHA(color_data->color, 255);
+			flashcard_color = RGBA8(255, 255, 255, 255);
+		} else {
 			// Selected Flashcard
-			setTextColor(SET_ALPHA(color_data->color, 255));
-			renderText(24, 66, 0.55, 0.55, false, "Flashcard INI location:");
-			renderText(30, 78, 0.55, 0.55, false, "SD:/");
-			renderText(52, 78, 0.55, 0.55, false, settings.ui.fcromfolder.c_str());
-			
+			sd_color = RGBA8(255, 255, 255, 255);
+			flashcard_color = SET_ALPHA(color_data->color, 255);
 		}
-		
+
+		setTextColor(sd_color);
+		renderText(24, 40, 0.55, 0.55, false, "SD ROM location:");
+		renderText(32, 52, 0.55, 0.55, false, "SD:/");
+		renderText(64, 52, 0.55, 0.55, false, settings.ui.romfolder.c_str());
+
+		setTextColor(flashcard_color);
+		renderText(24, 66, 0.55, 0.55, false, "Flashcard INI location:");
+		renderText(32, 78, 0.55, 0.55, false, "SD:/");
+		renderText(64, 78, 0.55, 0.55, false, settings.ui.fcromfolder.c_str());
+
+		// NOTE: U+E000 == "(A)", U+E001 = "(B)"
 		setTextColor(RGBA8(255, 255, 255, 255));
-		
-		renderText(8, 184, 0.60, 0.60, false, ": Change path");
-		renderText(8, 198, 0.60, 0.60, false, ": Return");
+		renderText(8, 184, 0.60, 0.60, false, u8"\uE000: Change path");
+		renderText(8, 198, 0.60, 0.60, false, u8"\uE001: Return");
 	}
 	setTextColor(RGBA8(255, 255, 255, 255));
 	if (title) {
