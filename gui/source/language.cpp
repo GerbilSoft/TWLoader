@@ -42,9 +42,6 @@ u8 language = 1;	// UI language ID.
 u8 sys_language = 1;	// System language ID.
 static const char *const *lang_data = lang_all[1];
 
-// Translation cache.
-static wchar_t *lang_cache[STR_MAX] = { };
-
 /**
  * Initialize translations.
  * Uses the language ID specified in settings.ui.language.
@@ -66,21 +63,8 @@ void langInit(void)
 		language = sys_language;
 	}
 
-	// Clear the language cache.
-	langClear();
 	// Set the selected language.
 	lang_data = lang_all[language];
-}
-
-/**
- * Clear the translations cache.
- */
-void langClear(void)
-{
-	for (int i = STR_MAX-1; i >= 0; i--) {
-		free(lang_cache[i]);
-		lang_cache[i] = NULL;
-	}
 }
 
 /**
@@ -91,19 +75,12 @@ void langClear(void)
  * @param strID String ID.
  * @return Translation, or error string if strID is invalid.
  */
-const wchar_t *TR(StrID strID)
+const char *TR(StrID strID)
 {
 	if (strID < 0 || strID >= STR_MAX) {
 		// Invalid string ID.
-		return L"STRID ERR";
+		return "STRID ERR";
 	}
 
-	if (lang_cache[strID]) {
-		// String has already been converted to wchar_t*.
-		return lang_cache[strID];
-	}
-
-	// Convert the string to wchar_t*.
-	lang_cache[strID] = utf8_to_wchar(lang_data[strID]);
-	return lang_cache[strID];
+	return lang_data[strID];
 }

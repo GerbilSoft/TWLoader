@@ -18,11 +18,6 @@ extern u8 sys_language;
  */
 void langInit(void);
 
-/**
- * Clear the translations cache.
- */
-void langClear(void);
-
 // String IDs.
 typedef enum _StrID {
 	
@@ -198,6 +193,6 @@ typedef enum _StrID {
  * @param strID String ID.
  * @return Translation, or error string if strID is invalid.
  */
-const wchar_t *TR(StrID strID);
+const char *TR(StrID strID);
 
 #endif /* TWLOADER_LANGUAGE_H */
