@@ -28,7 +28,8 @@ void sceneInit(void);
 void setTextColor(u32 color);
 void addTextVertex(float vx, float vy, float tx, float ty);
 void renderText(float x, float y, float scaleX, float scaleY, bool baseline, const char* text);
-void renderText_w(float x, float y, float scaleX, float scaleY, bool baseline, const wchar_t* text);
+void renderText_w(float x, float y, float scaleX, float scaleY, bool baseline, const wchar_t* text)
+	__attribute__ ((deprecated));
 // void sceneRender(float size);
 void sceneExit(void);
 

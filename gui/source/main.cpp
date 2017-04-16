@@ -1067,7 +1067,7 @@ static void drawMenuDialogBox(void)
 	drawRectangle(0, 0, 320, 240, RGBA8(0, 0, 0, menudbox_bgalpha)); // Fade in/out effect
 	sf2d_draw_texture(dialogboxtex, 0, menudbox_Ypos);
 	sf2d_draw_texture(dboxtex_buttonback, 233, menudbox_Ypos+193);
-	renderText_w(240, menudbox_Ypos+199, 0.50, 0.50, false, TR(STR_BACK));
+	renderText(240, menudbox_Ypos+199, 0.50, 0.50, false, TR(STR_BACK));
 	if (menudboxmode == DBOX_MODE_SETTINGS) {
 		bnriconnum = cursorPosition;
 		ChangeBNRIconNo();
@@ -1115,12 +1115,12 @@ static void drawMenuDialogBox(void)
 			int x;
 			int y;
 			const s8 *value;
-			const wchar_t *title;
-			const wchar_t *value_desc[2];	// 0 == off, 1 == on
+			const char *title;
+			const char *value_desc[2];	// 0 == off, 1 == on
 		} buttons[] = {
-			{ 23,  89, &settings.pergame.cpuspeed, TR(STR_START_ARM9_CPU_SPEED), {L"67 MHz (NTR)", L"133 MHz (TWL)"}},
-			{161,  89, &settings.pergame.extvram, TR(STR_START_VRAM_BOOST), {L"Off", L"On"}},
-			{ 23, 129, &settings.pergame.lockarm9scfgext, TR(STR_START_LOCK_ARM9_SCFG_EXT), {L"Off", L"On"}},
+			{ 23,  89, &settings.pergame.cpuspeed, TR(STR_START_ARM9_CPU_SPEED), {"67 MHz (NTR)", "133 MHz (TWL)"}},
+			{161,  89, &settings.pergame.extvram, TR(STR_START_VRAM_BOOST), {"Off", "On"}},
+			{ 23, 129, &settings.pergame.lockarm9scfgext, TR(STR_START_LOCK_ARM9_SCFG_EXT), {"Off", "On"}},
 			{161, 129, &settings.pergame.donor, TR(STR_START_SET_DONOR), {NULL, NULL}},
 			{ 23, 169, NULL, TR(STR_START_SET_LED), {NULL, NULL}},
 		};
@@ -1134,8 +1134,8 @@ static void drawMenuDialogBox(void)
 				sf2d_draw_texture_blend(dboxtex_button, buttons[i].x, menudbox_Ypos+buttons[i].y, RGBA8(127, 127, 127, 255));
 			}
 
-			const wchar_t *title = buttons[i].title;
-			const wchar_t *value_desc = TR(STR_START_DEFAULT);
+			const char *const title = buttons[i].title;
+			const char *value_desc = TR(STR_START_DEFAULT);
 			if (i < 3) {
 				switch (*(buttons[i].value)) {
 					case -1:
@@ -1162,7 +1162,7 @@ static void drawMenuDialogBox(void)
 			// int x = ((132 - w) / 2) + buttons[i].x;
 			int x = ((2 - w) / 2) + buttons[i].x;
 			setTextColor(RGBA8(0, 0, 0, 255));
-			renderText_w(x, y, 0.50, 0.50, false, title);
+			renderText(x, y, 0.50, 0.50, false, title);
 			y += 16;
 
 			// Draw the value.
@@ -1171,7 +1171,7 @@ static void drawMenuDialogBox(void)
 				w = 0;
 				// x = ((132 - w) / 2) + buttons[i].x;
 				x = ((2 - w) / 2) + buttons[i].x;
-				renderText_w(x, y, 0.50, 0.50, false, value_desc);
+				renderText(x, y, 0.50, 0.50, false, value_desc);
 			} else if (i == 4) {
 				// Show the RGB value.
 				char rgb_str[32];
@@ -1198,8 +1198,8 @@ static void drawMenuDialogBox(void)
 			int x;
 			int y;
 			const bool *value;
-			const wchar_t *title;
-			const wchar_t *value_desc[2];	// 0 == off, 1 == on
+			const char *title;
+			const char *value_desc[2];	// 0 == off, 1 == on
 		} buttons[] = {
 			{ 23,  31, &settings.twl.forwarder, TR(STR_START_GAMELOCATION), {TR(STR_START_SD_CARD), TR(STR_START_FLASHCARD)}},
 			{161,  31, &settings.romselect.toplayout, NULL, {TR(STR_START_BOXART_ON), TR(STR_START_BOXART_OFF)}},
@@ -1218,8 +1218,8 @@ static void drawMenuDialogBox(void)
 				sf2d_draw_texture_blend(dboxtex_button, buttons[i].x, menudbox_Ypos+buttons[i].y, RGBA8(127, 127, 127, 255));
 			}
 
-			const wchar_t *title = buttons[i].title;
-			const wchar_t *value_desc = (buttons[i].value ? buttons[i].value_desc[!!*(buttons[i].value)] : NULL);
+			const char *const title = buttons[i].title;
+			const char *const value_desc = (buttons[i].value ? buttons[i].value_desc[!!*(buttons[i].value)] : NULL);
 
 			// Determine width and height.
 			const int h = (title && value_desc ? 32 : 16);
@@ -1233,7 +1233,7 @@ static void drawMenuDialogBox(void)
 				const int w = 0;
 				// const int x = ((132 - w) / 2) + buttons[i].x;
 				const int x = ((2 - w) / 2) + buttons[i].x;
-				renderText_w(x, y, 0.50, 0.50, false, title);
+				renderText(x, y, 0.50, 0.50, false, title);
 				y += 16;
 			}
 			if (value_desc) {
@@ -1241,7 +1241,7 @@ static void drawMenuDialogBox(void)
 				const int w = 0;
 				// const int x = ((132 - w) / 2) + buttons[i].x;
 				const int x = ((2 - w) / 2) + buttons[i].x;
-				renderText_w(x, y, 0.50, 0.50, false, value_desc);
+				renderText(x, y, 0.50, 0.50, false, value_desc);
 			}
 		}
 	}
@@ -1974,16 +1974,16 @@ int main()
 							switch (settings.ui.subtheme) {
 								case 0:
 								default:
-									renderText_w(40+16, 192, 0.65f, 0.65f, false, TR(STR_YBUTTON_ADD_GAMES));
+									renderText(40+16, 192, 0.65f, 0.65f, false, TR(STR_YBUTTON_ADD_GAMES));
 									break;
 								case 1:
-									renderText_w(40+8, 64, 0.65f, 0.65f, false, TR(STR_YBUTTON_ADD_GAMES));
+									renderText(40+8, 64, 0.65f, 0.65f, false, TR(STR_YBUTTON_ADD_GAMES));
 									break;
 								case 2:
-									renderText_w(40+20, 142, 0.65f, 0.65f, false, TR(STR_YBUTTON_ADD_GAMES));
+									renderText(40+20, 142, 0.65f, 0.65f, false, TR(STR_YBUTTON_ADD_GAMES));
 									break;
 								case 3:
-									renderText_w(40+8, 126, 0.65f, 0.65f, false, TR(STR_YBUTTON_ADD_GAMES));
+									renderText(40+8, 126, 0.65f, 0.65f, false, TR(STR_YBUTTON_ADD_GAMES));
 									break;
 							}
 						}
@@ -2742,8 +2742,7 @@ int main()
 						} else
 							sf2d_draw_texture_part(smallsettingsicontex, 8, Ypos, bnriconframenum*32, 0, 32, 32);
 						setTextColor(RGBA8(255, 255, 255, 255)); // white
-						renderText_w(46.0f, filenameYpos, 0.45f, 0.45f, false, TR(STR_SETTINGS_TEXT));
-						
+						renderText(46.0f, filenameYpos, 0.45f, 0.45f, false, TR(STR_SETTINGS_TEXT));
 						renderText(2, 2, 0.50, 0.50, false, "Menu");
 					} else {
 						int Ypos = 26;
@@ -2839,7 +2838,7 @@ int main()
 						sf2d_draw_texture(bottomtex, 320/2 - bottomtex->width/2, 240/2 - bottomtex->height/2);
 						if (settings.twl.forwarder && !is3DSX) {
 							setTextColor(RGBA8(0, 0, 0, 255));
-							renderText_w(16, 192, 0.65f, 0.65f, false, TR(STR_YBUTTON_ADD_GAMES));
+							renderText(16, 192, 0.65f, 0.65f, false, TR(STR_YBUTTON_ADD_GAMES));
 						}
 						if (!bannertextloaded) {
 							char path[256];
@@ -2942,19 +2941,18 @@ int main()
 						// if (dspfirmfound) { sfx_menuselect->play(); }
 						bool drawBannerText = true;
 						if (cursorPosition == -2) {
-							const wchar_t *curn2text = TR(STR_SETTINGS_TEXT);
+							const char *const curn2text = TR(STR_SETTINGS_TEXT);
 							// const int text_width = sftd_get_wtext_width(font_b, 18, curn2text);
 							const int text_width = 0;
 							setTextColor(RGBA8(0, 0, 0, 255)); // black
-							renderText_w((320-text_width)/2, 38, 0.70, 0.70, false, curn2text);
+							renderText((320-text_width)/2, 38, 0.70, 0.70, false, curn2text);
 							drawBannerText = false;
 						} else if (cursorPosition == -1) {
 							if (settings.twl.forwarder) {
-								static const char add_games_text[] = "Add Games";
 								// const int text_width = sftd_get_text_width(font_b, 18, add_games_text);
 								const int text_width = 0;
 								setTextColor(RGBA8(0, 0, 0, 255)); // black
-								renderText((320-text_width)/2, 38, 0.70, 0.70, false, add_games_text);
+								renderText((320-text_width)/2, 38, 0.70, 0.70, false, "Add Games");
 								drawBannerText = false;
 							} else {
 								// Get the text from the Slot 1 cartridge.
@@ -2977,7 +2975,7 @@ int main()
 								}
 
 								if (romsel_gameline.empty()) {
-									const wchar_t *msg;
+									const char *msg;
 									if (gamecardIsInserted()) {
 										// Game card is inserted, but unrecognized.
 										// It may be a blocked flashcard.
@@ -2989,7 +2987,7 @@ int main()
 									// const int text_width = sftd_get_wtext_width(font_b, 18, msg);
 									const int text_width = 0;
 									setTextColor(RGBA8(0, 0, 0, 255)); // black
-									renderText_w((320-text_width)/2, 38, 0.70, 0.70, false, msg);
+									renderText((320-text_width)/2, 38, 0.70, 0.70, false, msg);
 									drawBannerText = false;
 								}
 							}
@@ -3096,13 +3094,13 @@ int main()
 					}
 
 					if(!is3DSX) {
-						const wchar_t *home_text = TR(STR_RETURN_TO_HOME_MENU);
+						const char *const home_text = TR(STR_RETURN_TO_HOME_MENU);
 						// const int home_width = sftd_get_wtext_width(font, 13, home_text) + 16;
 						const int home_width = 144+16;
 						const int home_x = (320-home_width)/2;
 						sf2d_draw_texture(homeicontex, home_x, 219); // Draw HOME icon
 						setTextColor(RGBA8(0, 0, 0, 255));
-						renderText_w(home_x+20, 220, 0.50, 0.50, false, home_text);
+						renderText(home_x+20, 220, 0.50, 0.50, false, home_text);
 					}
 
 					if (pagenum == 0) {
@@ -3204,22 +3202,21 @@ int main()
 						} else {
 							if (!is3DSX || cursorPosition == -2) {
 								// Print "START" and the cursor border.
+								const char *const start_text = TR(STR_START);
 								if (settings.ui.iconsize) {
 									sf2d_draw_texture_scale(startbordertex, 120+startbordermovepos, 108+startbordermovepos, startborderscalesize+0.25, startborderscalesize+0.25);
-									const wchar_t *start_text = TR(STR_START);
 									// const int start_width = sftd_get_wtext_width(font_b, 16, start_text);
 									const int start_width = 0;
 									// sftd_draw_wtext(font_b, (320-start_width)/2, 183, RGBA8(255, 255, 255, 255), 16, start_text);
 									setTextColor(RGBA8(255, 255, 255, 255));
-									renderText_w(136, 184, 0.60, 0.60, false, start_text);
+									renderText(136, 184, 0.60, 0.60, false, start_text);
 								} else {
 									sf2d_draw_texture_scale(startbordertex, 128+startbordermovepos, 116+startbordermovepos, startborderscalesize, startborderscalesize);
-									const wchar_t *start_text = TR(STR_START);
 									// const int start_width = sftd_get_wtext_width(font_b, 12, start_text);
 									const int start_width = 0;
 									// sftd_draw_wtext(font_b, (320-start_width)/2, 177, RGBA8(255, 255, 255, 255), 12, start_text);
 									setTextColor(RGBA8(255, 255, 255, 255));
-									renderText_w(140, 177, 0.50, 0.50, false, start_text);
+									renderText(140, 177, 0.50, 0.50, false, start_text);
 								}
 							}
 						}
@@ -4530,9 +4527,6 @@ int main()
 	sf2d_free_texture(dboxtex_buttonback);
 	sf2d_free_texture(dialogboxtex);
 	sf2d_free_texture(settingslogotex);
-
-	// Clear the translations cache.
-	langClear();
 
 	// Shut down audio.
 	delete bgm_menu;

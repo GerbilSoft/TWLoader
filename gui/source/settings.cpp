@@ -230,12 +230,12 @@ void settingsDrawTopScreen(void)
 			sf2d_draw_texture(settingslogotex, offset3D[topfb].boxart+400/2 - settingslogotex->width/2, 240/2 - settingslogotex->height/2);
 			if (subscreenmode == SUBSCREEN_MODE_FRONTEND) {
 				setTextColor(RGBA8(0, 0, 255, 255));
-				renderText_w(offset3D[topfb].disabled+72, 166, 0.60, 0.60, false, TR(STR_SETTINGS_XBUTTON_RELEASE));
+				renderText(offset3D[topfb].disabled+72, 166, 0.60, 0.60, false, TR(STR_SETTINGS_XBUTTON_RELEASE));
 				setTextColor(RGBA8(0, 255, 0, 255));
-				renderText_w(offset3D[topfb].disabled+72, 180, 0.60, 0.60, false, TR(STR_SETTINGS_YBUTTON_UNOFFICIAL));
+				renderText(offset3D[topfb].disabled+72, 180, 0.60, 0.60, false, TR(STR_SETTINGS_YBUTTON_UNOFFICIAL));
 				if(!is3DSX) {
 					setTextColor(RGBA8(255, 255, 255, 255));
-					renderText_w(offset3D[topfb].disabled+72, 194, 0.60, 0.60, false, TR(STR_SETTINGS_SETTINGS_START_UPDATE_TWLOADER));
+					renderText(offset3D[topfb].disabled+72, 194, 0.60, 0.60, false, TR(STR_SETTINGS_SETTINGS_START_UPDATE_TWLOADER));
 				}
 			} else if (subscreenmode == SUBSCREEN_MODE_CHANGE_ROM_PATH) {
 				setTextColor(RGBA8(255, 255, 255, 255));
@@ -297,7 +297,7 @@ void settingsDrawBottomScreen(void)
 	static const int Xpos = 24;
 	static const int XposValue = 236;
 	// Title for the bottom screen.
-	const wchar_t *title = L"";
+	const char *title = nullptr;
 
 	if (subscreenmode == SUBSCREEN_MODE_FRONTEND) {
 		sf2d_draw_texture(shoulderLtex, 0, LshoulderYpos);
@@ -321,13 +321,12 @@ void settingsDrawBottomScreen(void)
 			"Russian",	// Russian (TODO) [Font's characters are too wide]
 			"ZHTW",		// Traditional Chinese (TODO)
 		};
-		// TODO: Cache the conversion?
-		wstring languagevaluetext;
+		const char *languagevaluetext;
 		if (settings.ui.language >= 0 && settings.ui.language < 12) {
-			languagevaluetext = utf8_to_wstring(language_text[settings.ui.language]);
+			languagevaluetext = language_text[settings.ui.language];
 		} else {
 			// TODO: Translate?
-			languagevaluetext = latin1_to_wstring("System");
+			languagevaluetext = "System";
 		}
 
 		// Theme text.
@@ -339,54 +338,54 @@ void settingsDrawBottomScreen(void)
 		const char *const themevaluetext = theme_text[settings.ui.theme];
 
 		// Color text.
-		const wchar_t *color_text[] = {
-			TR(STR_SETTINGS_VALUES_GRAY),
-			TR(STR_SETTINGS_VALUES_BROWN),
-			TR(STR_SETTINGS_VALUES_RED),
-			TR(STR_SETTINGS_VALUES_PINK),
-			TR(STR_SETTINGS_VALUES_ORANGE),
-			TR(STR_SETTINGS_VALUES_YELLOW),
-			TR(STR_SETTINGS_VALUES_YELLOW_GREEN),
-			TR(STR_SETTINGS_VALUES_GREEN_1),
-			TR(STR_SETTINGS_VALUES_GREEN_2),
-			TR(STR_SETTINGS_VALUES_LIGHT_GREEN),
-			TR(STR_SETTINGS_VALUES_SKY_BLUE),
-			TR(STR_SETTINGS_VALUES_LIGHT_BLUE),
-			TR(STR_SETTINGS_VALUES_BLUE),
-			TR(STR_SETTINGS_VALUES_VIOLET),
-			TR(STR_SETTINGS_VALUES_PURPLE),
-			TR(STR_SETTINGS_VALUES_FUCHSIA),
-			TR(STR_SETTINGS_VALUES_RED_AND_BLUE),
-			TR(STR_SETTINGS_VALUES_GREEN_AND_YELLOW),
-			TR(STR_SETTINGS_VALUES_CHRISTMAS)
+		static const u16 color_text_id[] = {
+			STR_SETTINGS_VALUES_GRAY,
+			STR_SETTINGS_VALUES_BROWN,
+			STR_SETTINGS_VALUES_RED,
+			STR_SETTINGS_VALUES_PINK,
+			STR_SETTINGS_VALUES_ORANGE,
+			STR_SETTINGS_VALUES_YELLOW,
+			STR_SETTINGS_VALUES_YELLOW_GREEN,
+			STR_SETTINGS_VALUES_GREEN_1,
+			STR_SETTINGS_VALUES_GREEN_2,
+			STR_SETTINGS_VALUES_LIGHT_GREEN,
+			STR_SETTINGS_VALUES_SKY_BLUE,
+			STR_SETTINGS_VALUES_LIGHT_BLUE,
+			STR_SETTINGS_VALUES_BLUE,
+			STR_SETTINGS_VALUES_VIOLET,
+			STR_SETTINGS_VALUES_PURPLE,
+			STR_SETTINGS_VALUES_FUCHSIA,
+			STR_SETTINGS_VALUES_RED_AND_BLUE,
+			STR_SETTINGS_VALUES_GREEN_AND_YELLOW,
+			STR_SETTINGS_VALUES_CHRISTMAS,
 		};
 		if (settings.ui.color < 0 || settings.ui.color > 18)
 			settings.ui.color = 0;
-		const wchar_t *colorvaluetext = color_text[settings.ui.color];
+		const char *const colorvaluetext = TR((StrID)color_text_id[settings.ui.color]);
 
 		// Menu color text.
-		const wchar_t *menu_color_text[] = {
-			TR(STR_SETTINGS_VALUES_WHITE),
-			TR(STR_SETTINGS_VALUES_BLACK),
-			TR(STR_SETTINGS_VALUES_BROWN),
-			TR(STR_SETTINGS_VALUES_RED),
-			TR(STR_SETTINGS_VALUES_PINK),
-			TR(STR_SETTINGS_VALUES_ORANGE),
-			TR(STR_SETTINGS_VALUES_YELLOW),
-			TR(STR_SETTINGS_VALUES_YELLOW_GREEN),
-			TR(STR_SETTINGS_VALUES_GREEN_1),
-			TR(STR_SETTINGS_VALUES_GREEN_2),
-			TR(STR_SETTINGS_VALUES_LIGHT_GREEN),
-			TR(STR_SETTINGS_VALUES_SKY_BLUE),
-			TR(STR_SETTINGS_VALUES_LIGHT_BLUE),
-			TR(STR_SETTINGS_VALUES_BLUE),
-			TR(STR_SETTINGS_VALUES_VIOLET),
-			TR(STR_SETTINGS_VALUES_PURPLE),
-			TR(STR_SETTINGS_VALUES_FUCHSIA)
+		static const u16 menu_color_text_id[] = {
+			STR_SETTINGS_VALUES_WHITE,
+			STR_SETTINGS_VALUES_BLACK,
+			STR_SETTINGS_VALUES_BROWN,
+			STR_SETTINGS_VALUES_RED,
+			STR_SETTINGS_VALUES_PINK,
+			STR_SETTINGS_VALUES_ORANGE,
+			STR_SETTINGS_VALUES_YELLOW,
+			STR_SETTINGS_VALUES_YELLOW_GREEN,
+			STR_SETTINGS_VALUES_GREEN_1,
+			STR_SETTINGS_VALUES_GREEN_2,
+			STR_SETTINGS_VALUES_LIGHT_GREEN,
+			STR_SETTINGS_VALUES_SKY_BLUE,
+			STR_SETTINGS_VALUES_LIGHT_BLUE,
+			STR_SETTINGS_VALUES_BLUE,
+			STR_SETTINGS_VALUES_VIOLET,
+			STR_SETTINGS_VALUES_PURPLE,
+			STR_SETTINGS_VALUES_FUCHSIA,
 		};
 		if (settings.ui.menucolor < 0 || settings.ui.menucolor > 18)
 			settings.ui.menucolor = 0;
-		const wchar_t  *menucolorvaluetext = menu_color_text[settings.ui.menucolor];
+		const char *const menucolorvaluetext = TR((StrID)menu_color_text_id[settings.ui.menucolor]);
 
 		const char *const filenamevaluetext = (settings.ui.filename ? "On" : "Off");
 		const char *const countervaluetext = (settings.ui.counter ? "On" : "Off");
@@ -411,24 +410,24 @@ void settingsDrawBottomScreen(void)
 		int Ypos = 40;
 		if (cursor_pos[0] == 0) {
 			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_LANGUAGE_1));
-			renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_LANGUAGE_2));
+			renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_LANGUAGE_1));
+			renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_LANGUAGE_2));
 			setTextColor(SET_ALPHA(color_data->color, 255));
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText_w(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_LANGUAGE));
-		renderText_w(XposValue, Ypos, 0.55, 0.55, false, languagevaluetext.c_str());
+		renderText(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_LANGUAGE));
+		renderText(XposValue, Ypos, 0.55, 0.55, false, languagevaluetext);
 		Ypos += 12;
 		if (cursor_pos[0] == 1) {
 			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_THEME_1));
-			renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_THEME_2));
+			renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_THEME_1));
+			renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_THEME_2));
 			setTextColor(SET_ALPHA(color_data->color, 255));
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText_w(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_THEME));
+		renderText(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_THEME));
 		if (settings.ui.theme == 2)
 			renderText(XposValue, Ypos, 0.48, 0.55, false, themevaluetext);
 		else
@@ -436,80 +435,80 @@ void settingsDrawBottomScreen(void)
 		Ypos += 12;
 		if (cursor_pos[0] == 2) {
 			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_COLOR_1));
-			renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_COLOR_2));
+			renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_COLOR_1));
+			renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_COLOR_2));
 			setTextColor(SET_ALPHA(color_data->color, 255));
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText_w(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_COLOR));
-		renderText_w(XposValue, Ypos, 0.55, 0.55, false, colorvaluetext);
+		renderText(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_COLOR));
+		renderText(XposValue, Ypos, 0.55, 0.55, false, colorvaluetext);
 		Ypos += 12;
 		if (cursor_pos[0] == 3) {
 			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_MENUCOLOR_1));
-			renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_MENUCOLOR_2));
+			renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_MENUCOLOR_1));
+			renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_MENUCOLOR_2));
 			setTextColor(SET_ALPHA(color_data->color, 255));
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText_w(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_MENUCOLOR));
-		renderText_w(XposValue, Ypos, 0.55, 0.55, false, menucolorvaluetext);
+		renderText(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_MENUCOLOR));
+		renderText(XposValue, Ypos, 0.55, 0.55, false, menucolorvaluetext);
 		Ypos += 12;
 		if (cursor_pos[0] == 4) {
 			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_FILENAME_1));
-			renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_FILENAME_2));
+			renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_FILENAME_1));
+			renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_FILENAME_2));
 			setTextColor(SET_ALPHA(color_data->color, 255));
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText_w(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_FILENAME));
+		renderText(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_FILENAME));
 		renderText(XposValue, Ypos, 0.55, 0.55, false, filenamevaluetext);
 		Ypos += 12;
 		if (cursor_pos[0] == 5) {
 			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_COUNTER_1));
-			renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_COUNTER_2));
+			renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_COUNTER_1));
+			renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_COUNTER_2));
 			setTextColor(SET_ALPHA(color_data->color, 255));
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText_w(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_COUNTER));
+		renderText(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_COUNTER));
 		renderText(XposValue, Ypos, 0.55, 0.55, false, countervaluetext);
 		Ypos += 12;
 		if (cursor_pos[0] == 6) {
 			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_CUSTOM_BOTTOM_1));
-			renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_CUSTOM_BOTTOM_2));
+			renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_CUSTOM_BOTTOM_1));
+			renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_CUSTOM_BOTTOM_2));
 			setTextColor(SET_ALPHA(color_data->color, 255));
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText_w(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_CUSTOM_BOTTOM));
+		renderText(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_CUSTOM_BOTTOM));
 		renderText(XposValue, Ypos, 0.55, 0.55, false, custombotvaluetext);
 		Ypos += 12;
 		if (cursor_pos[0] == 7) {
 			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_AUTOUPDATE_BOOTSTRAP_1));
-			renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_AUTOUPDATE_BOOTSTRAP_2));
+			renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_AUTOUPDATE_BOOTSTRAP_1));
+			renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_AUTOUPDATE_BOOTSTRAP_2));
 			setTextColor(SET_ALPHA(color_data->color, 255));
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText_w(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_AUTOUPDATE_BOOTSTRAP));
+		renderText(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_AUTOUPDATE_BOOTSTRAP));
 		renderText(XposValue, Ypos, 0.55, 0.55, false, autoupdatevaluetext);
 		Ypos += 12;
 		if(!is3DSX) {
 			if (cursor_pos[0] == 8) {
 				setTextColor(RGBA8(255, 255, 255, 255));
-				renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_AUTOUPDATE_TWLOADER_1));
-				renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_AUTOUPDATE_TWLOADER_2));
+				renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_AUTOUPDATE_TWLOADER_1));
+				renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_AUTOUPDATE_TWLOADER_2));
 				setTextColor(SET_ALPHA(color_data->color, 255));
 			} else {
 				setTextColor(RGBA8(255, 255, 255, 255));
 			}
-			renderText_w(Xpos, Ypos, 0.45, 0.55, false, TR(STR_SETTINGS_AUTOUPDATE_TWLOADER));
+			renderText(Xpos, Ypos, 0.45, 0.55, false, TR(STR_SETTINGS_AUTOUPDATE_TWLOADER));
 			renderText(XposValue, Ypos, 0.55, 0.55, false, autodlvaluetext);
 			Ypos += 12;
 		}
@@ -560,117 +559,117 @@ void settingsDrawBottomScreen(void)
 				break;
 		}
 
-		const char *lockarm9scfgextvaluetext = (settings.twl.lockarm9scfgext ? "On" : "Off");
+		const char *const lockarm9scfgextvaluetext = (settings.twl.lockarm9scfgext ? "On" : "Off");
 
 		title = TR(STR_SETTINGS_NTR_TWL);
 		int Ypos = 40;
 		if (cursor_pos[1] == 0) {			
 			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_FLASHCARD_SELECT_1));
-			renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_FLASHCARD_SELECT_2));
+			renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_FLASHCARD_SELECT_1));
+			renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_FLASHCARD_SELECT_2));
 			setTextColor(SET_ALPHA(color_data->color, 255));
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText_w(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_FLASHCARD_SELECT));
+		renderText(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_FLASHCARD_SELECT));
 		Ypos += 12;
 		if (cursor_pos[1] == 1) {
 			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_RAINBOW_LED_1));
-			renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_RAINBOW_LED_2));
+			renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_RAINBOW_LED_1));
+			renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_RAINBOW_LED_2));
 			setTextColor(SET_ALPHA(color_data->color, 255));
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText_w(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_RAINBOW_LED));
+		renderText(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_RAINBOW_LED));
 		renderText(XposValue, Ypos, 0.55, 0.55, false, rainbowledvaluetext);
 		Ypos += 12;
 		if (cursor_pos[1] == 2) {
 			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText_w(8, 184, 0.60, 0.60f, false, TR(SRT_SETTINGS_DESCRIPTION_ARM9_CPU_SPEED_1));
-			renderText_w(8, 198, 0.60, 0.60f, false, TR(SRT_SETTINGS_DESCRIPTION_ARM9_CPU_SPEED_2));
+			renderText(8, 184, 0.60, 0.60f, false, TR(SRT_SETTINGS_DESCRIPTION_ARM9_CPU_SPEED_1));
+			renderText(8, 198, 0.60, 0.60f, false, TR(SRT_SETTINGS_DESCRIPTION_ARM9_CPU_SPEED_2));
 			setTextColor(SET_ALPHA(color_data->color, 255));
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText_w(Xpos, Ypos, 0.55, 0.55, false, TR(SRT_SETTINGS_ARM9_CPU_SPEED));
+		renderText(Xpos, Ypos, 0.55, 0.55, false, TR(SRT_SETTINGS_ARM9_CPU_SPEED));
 		renderText(XposValue, Ypos, 0.45, 0.55, false, cpuspeedvaluetext);
 		Ypos += 12;
 		if (cursor_pos[1] == 3) {
 			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_VRAM_BOOST_1));
-			renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_VRAM_BOOST_2));
+			renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_VRAM_BOOST_1));
+			renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_VRAM_BOOST_2));
 			setTextColor(SET_ALPHA(color_data->color, 255));
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText_w(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_VRAM_BOOST));
+		renderText(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_VRAM_BOOST));
 		renderText(XposValue, Ypos, 0.55, 0.55, false, extvramvaluetext);
 		Ypos += 12;
 		if (cursor_pos[1] == 4) {
 			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_DS_DSi_BOOT_SCREEN_1));
-			renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_DS_DSi_BOOT_SCREEN_2));
+			renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_DS_DSi_BOOT_SCREEN_1));
+			renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_DS_DSi_BOOT_SCREEN_2));
 			setTextColor(SET_ALPHA(color_data->color, 255));
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText_w(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_DS_DSi_BOOT_SCREEN));
+		renderText(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_DS_DSi_BOOT_SCREEN));
 		renderText(XposValue, Ypos, 0.50, 0.55, false, bootscreenvaluetext);
 		Ypos += 12;
 		if (cursor_pos[1] == 5) {
 			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_DS_DSi_SAFETY_MESSAGE_1));
-			renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_DS_DSi_SAFETY_MESSAGE_2));
+			renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_DS_DSi_SAFETY_MESSAGE_1));
+			renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_DS_DSi_SAFETY_MESSAGE_2));
 			setTextColor(SET_ALPHA(color_data->color, 255));
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText_w(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_DS_DSi_SAFETY_MESSAGE));
+		renderText(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_DS_DSi_SAFETY_MESSAGE));
 		renderText(XposValue, Ypos, 0.55, 0.55, false, healthsafetyvaluetext);
 		Ypos += 12;
 		if (cursor_pos[1] == 6) {
 			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_RESET_SLOT_1_1));
-			renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_RESET_SLOT_1_2));
+			renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_RESET_SLOT_1_1));
+			renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_RESET_SLOT_1_2));
 			setTextColor(SET_ALPHA(color_data->color, 255));
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText_w(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_RESET_SLOT_1));
+		renderText(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_RESET_SLOT_1));
 		renderText(XposValue, Ypos, 0.55, 0.55, false, resetslot1valuetext);
 		Ypos += 12;
 		if (cursor_pos[1] == 7) {
 			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_CONSOLE_OUTPUT_1));
-			renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_CONSOLE_OUTPUT_2));
+			renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_CONSOLE_OUTPUT_1));
+			renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_CONSOLE_OUTPUT_2));
 			setTextColor(SET_ALPHA(color_data->color, 255));
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText_w(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_CONSOLE_OUTPUT));
+		renderText(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_CONSOLE_OUTPUT));
 		renderText(XposValue, Ypos, 0.55, 0.55, false, consolevaluetext);
 		Ypos += 12;
 		if (cursor_pos[1] == 8) {
 			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_LOCK_ARM9_SCFG_EXT_1));
-			renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_LOCK_ARM9_SCFG_EXT_2));
+			renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_LOCK_ARM9_SCFG_EXT_1));
+			renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_LOCK_ARM9_SCFG_EXT_2));
 			setTextColor(SET_ALPHA(color_data->color, 255));
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText_w(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_LOCK_ARM9_SCFG_EXT));
+		renderText(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_LOCK_ARM9_SCFG_EXT));
 		renderText(XposValue, Ypos, 0.55, 0.55, false, lockarm9scfgextvaluetext);
 		Ypos += 12;
 		if (cursor_pos[1] == 9) {
 			setTextColor(RGBA8(255, 255, 255, 255));
-			renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_BOOTSTRAP_1));
-			renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_BOOTSTRAP_2));
+			renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_BOOTSTRAP_1));
+			renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_DESCRIPTION_BOOTSTRAP_2));
 			setTextColor(SET_ALPHA(color_data->color, 255));
 		} else {
 			setTextColor(RGBA8(255, 255, 255, 255));
 		}
-		renderText_w(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_BOOTSTRAP));
+		renderText(Xpos, Ypos, 0.55, 0.55, false, TR(STR_SETTINGS_BOOTSTRAP));
 		renderText(XposValue, Ypos, 0.55, 0.55, false, bootstrapfilevaluetext);
 		Ypos += 12;		
 	} else if (subscreenmode == SUBSCREEN_MODE_FLASH_CARD) {
@@ -697,13 +696,13 @@ void settingsDrawBottomScreen(void)
 			renderText(Xpos, Ypos, 0.45, 0.45, false, fctext[i]);
 		}
 		setTextColor(RGBA8(255, 255, 255, 255));
-		renderText_w(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_LEFTRIGHT_PICK));
-		renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_AB_SAVE_RETURN));
+		renderText(8, 184, 0.60, 0.60f, false, TR(STR_SETTINGS_LEFTRIGHT_PICK));
+		renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_AB_SAVE_RETURN));
 	} else if (subscreenmode == SUBSCREEN_MODE_SUB_THEME) {
 		if (settings.ui.theme == 0) {
 			title = TR(STR_SETTINGS_SUBTHEME_DSi);
 			setTextColor(SET_ALPHA(color_data->color, 255));
-			renderText_w(Xpos, 40, 0.55, 0.55, false, TR(STR_SETTINGS_NO_SUB_THEMES));
+			renderText(Xpos, 40, 0.55, 0.55, false, TR(STR_SETTINGS_NO_SUB_THEMES));
 		} else if (settings.ui.theme == 1) {
 			title = TR(STR_SETTINGS_SUBTHEME_R4);
 			int Ypos = 40;
@@ -824,9 +823,9 @@ void settingsDrawBottomScreen(void)
 			Ypos += 12;
 		}
 		setTextColor(RGBA8(255, 255, 255, 255));
-		renderText_w(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_AB_SAVE_RETURN));
-	}else if (subscreenmode == SUBSCREEN_MODE_CHANGE_ROM_PATH) {
-		title = L"Rom path location";
+		renderText(8, 198, 0.60, 0.60f, false, TR(STR_SETTINGS_AB_SAVE_RETURN));
+	} else if (subscreenmode == SUBSCREEN_MODE_CHANGE_ROM_PATH) {
+		title = "ROM path location";
 	
 		if (cursor_pos[4] == 0){
 			// Selected SD
@@ -862,7 +861,9 @@ void settingsDrawBottomScreen(void)
 		renderText(8, 198, 0.60, 0.60, false, ": Return");
 	}
 	setTextColor(RGBA8(255, 255, 255, 255));
-	renderText_w(2, 2, 0.75, 0.75, false, title);
+	if (title) {
+		renderText(2, 2, 0.75, 0.75, false, title);
+	}
 }
 
 /**
@@ -1171,17 +1172,14 @@ bool settingsMoveCursor(u32 hDown)
 			subscreenmode = SUBSCREEN_MODE_FRONTEND;
 			sfx = sfx_select;
 		} else if (hDown & KEY_A) {
-			std::string oldPath = (cursor_pos[4] == 0) ? settings.ui.romfolder : settings.ui.fcromfolder;
-			std::wstring widestr = (cursor_pos[4] == 0) ? 
-													std::wstring(settings.ui.romfolder.begin(), settings.ui.romfolder.end()) : 
-													std::wstring(settings.ui.fcromfolder.begin(), settings.ui.fcromfolder.end());
-			
-			const wchar_t* currentPath = widestr.c_str();
-			std::string newPath = keyboardInput(currentPath);
-			
-			(cursor_pos[4] == 0) ? settings.ui.romfolder = newPath : settings.ui.fcromfolder = newPath;			
+			std::string &path = (cursor_pos[4] == 0) ? settings.ui.romfolder : settings.ui.fcromfolder;
+			std::string newPath = keyboardInput(path.c_str());
 
-			if(oldPath != newPath){						
+			if (path != newPath) {
+				// Need to restart the application for changes to take effect.
+				// TODO: Make this unnecessary.
+				path = newPath;
+
 				// Buffers for APT_DoApplicationJump().
 				u8 param[0x300];
 				u8 hmac[0x20];
