@@ -12,7 +12,6 @@
 #include <unistd.h>
 #include <string>
 using std::string;
-using std::wstring;
 
 #include <3ds.h>
 #include <sf2d.h>
