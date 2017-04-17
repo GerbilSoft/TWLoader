@@ -27,7 +27,27 @@ extern int textVtxArrayPos;
 void sceneInit(void);
 void setTextColor(u32 color);
 void addTextVertex(float vx, float vy, float tx, float ty);
-void renderText(float x, float y, float scaleX, float scaleY, bool baseline, const char* text);
+
+/**
+ * Render text.
+ * @param x X coordinate.
+ * @param y Y coordinate.
+ * @param scaleX X scaling.
+ * @param scaleY Y scaling.
+ * @param baseline True to render at baseline; false to not.
+ * @param text Text to draw.
+ */
+void renderText(float x, float y, float scaleX, float scaleY, bool baseline, const char *text);
+
+/**
+ * Measure text width.
+ * @param scaleX X scaling.
+ * @param scaleY Y scaling.
+ * @param text Text to draw.
+ * @return Text width.
+ */
+float measureTextWidth(float scaleX, float scaleY, const char *text);
+
 // void sceneRender(float size);
 void sceneExit(void);
 

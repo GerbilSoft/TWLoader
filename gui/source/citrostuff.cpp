@@ -79,7 +79,16 @@ void addTextVertex(float vx, float vy, float tx, float ty)
 	vtx->texcoord[1] = ty;
 }
 
-void renderText(float x, float y, float scaleX, float scaleY, bool baseline, const char* text)
+/**
+ * Render text.
+ * @param x X coordinate.
+ * @param y Y coordinate.
+ * @param scaleX X scaling.
+ * @param scaleY Y scaling.
+ * @param baseline True to render at baseline; false to not.
+ * @param text Text to draw.
+ */
+void renderText(float x, float y, float scaleX, float scaleY, bool baseline, const char *text)
 {
 	ssize_t  units;
 	uint32_t code;
@@ -135,6 +144,50 @@ void renderText(float x, float y, float scaleX, float scaleY, bool baseline, con
 
 		}
 	} while (code > 0);
+}
+
+/**
+ * Measure text width.
+ * @param scaleX X scaling.
+ * @param scaleY Y scaling.
+ * @param text Text to draw.
+ * @return Text width.
+ */
+float measureTextWidth(float scaleX, float scaleY, const char *text)
+{
+	ssize_t units;
+	uint32_t code;
+
+	float x = 0.0f;
+	float x_max = 0.0f;
+
+	const uint8_t* p = (const uint8_t*)text;
+	u32 flags = GLYPH_POS_CALC_VTXCOORD;
+	do
+	{
+		if (!*p) break;
+		units = decode_utf8(&code, p);
+		if (units == -1)
+			break;
+		p += units;
+		if (code == '\n')
+		{
+			if (x > x_max)
+				x_max = x;
+			x = 0.0f;
+		}
+		else if (code > 0)
+		{
+			int glyphIdx = fontGlyphIndexFromCodePoint(code);
+			fontGlyphPos_s data;
+			fontCalcGlyphPos(&data, glyphIdx, flags, scaleX, scaleY);
+			x += data.xAdvance;
+		}
+	} while (code > 0);
+
+	if (x > x_max)
+		x_max = x;
+	return x;
 }
 
 /* void sceneRender(float size)
