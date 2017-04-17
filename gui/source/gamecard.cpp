@@ -13,7 +13,6 @@
 #include <vector>
 using std::string;
 using std::vector;
-using std::wstring;
 
 // Current card information.
 static union {
