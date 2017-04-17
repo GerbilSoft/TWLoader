@@ -11,7 +11,7 @@
 #include <vector>
 using std::string;
 using std::vector;
-using std::wstring;
+using std::string;
 
 /**
  * Convert a color from NDS BGR555 to RGB5A1.
@@ -42,9 +42,9 @@ int grabTID(FILE* ndsFile, char *buf) {
  * Get text from an NDS banner.
  * @param ndsBanner NDS banner.
  * @param bnrtitlenum Title number. (aka language)
- * @return Vector containing each line as a wide string. (empty on error)
+ * @return Vector containing each line as a string. (empty on error)
  */
-vector<wstring> grabText(const sNDSBanner* ndsBanner, int bnrtitlenum) {
+vector<string> grabText(const sNDSBanner* ndsBanner, int bnrtitlenum) {
 	// Check for unsupported languages.
 	switch (bnrtitlenum-1) {
 		case N3DS_LANG_DUTCH:
@@ -91,22 +91,22 @@ vector<wstring> grabText(const sNDSBanner* ndsBanner, int bnrtitlenum) {
 		case 0:
 		default:
 			// Unsupported banner version.
-			vector<wstring> vec_wstr;
-			vec_wstr.push_back(L"No Info");
-			return vec_wstr;
+			vector<string> vec_str;
+			vec_str.push_back("No Info");
+			return vec_str;
 	}
 
-	// Convert the UTF-16 description (with newlines) to a vector of wstrings.
-	return utf16_nl_to_vwstring(ndsBanner->titles[bnrtitlenum], 128);
+	// Convert the UTF-16 description (with newlines) to a vector of strings.
+	return utf16_nl_to_vstring(ndsBanner->titles[bnrtitlenum], 128);
 }
 
 /**
  * Get text from a cached NDS banner.
  * @param binFile Banner file.
  * @param bnrtitlenum Title number. (aka language)
- * @return Vector containing each line as a wide string. (empty on error)
+ * @return Vector containing each line as a string. (empty on error)
  */
-vector<wstring> grabText(FILE* binFile, int bnrtitlenum) {
+vector<string> grabText(FILE* binFile, int bnrtitlenum) {
 	// Load the banner.
 	// NOTE: ndsBanner is cleared first in case the banner
 	// file is smaller than NDS_BANNER_SIZE_DSi.
@@ -117,9 +117,9 @@ vector<wstring> grabText(FILE* binFile, int bnrtitlenum) {
 	if (read < NDS_BANNER_VER_ORIGINAL) {
 		// Banner file is invalid.
 		// Unsupported banner version.
-		vector<wstring> vec_wstr;
-		vec_wstr.push_back(L"No Info");
-		return vec_wstr;
+		vector<string> vec_str;
+		vec_str.push_back("No Info");
+		return vec_str;
 	}
 
 	// Get the banner text.

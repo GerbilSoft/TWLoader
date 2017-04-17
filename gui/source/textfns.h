@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+/** UTF-16 **/
+
 /**
  * Convert a UTF-16 string to wstring.
  * @param in_u16str UTF-16 string.
@@ -27,6 +29,16 @@ wchar_t *utf16_to_wchar(const u16 *in_u16str);
  * @return vector<wstring>, split on newline boundaries.
  */
 std::vector<std::wstring> utf16_nl_to_vwstring(const u16 *in_u16str, int len);
+
+/**
+ * Convert a UTF-16 string with newlines to a vector of strings.
+ * @param in_str UTF-16 string with newlines. (not necessarily NULL-terminated)
+ * @param len Length of in_str.
+ * @return vector<string>, split on newline boundaries.
+ */
+std::vector<std::string> utf16_nl_to_vstring(const u16 *in_u16str, int len);
+
+/** UTF-8 **/
 
 /**
  * Convert a UTF-8 string to wstring.

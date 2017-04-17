@@ -27,7 +27,7 @@ static char card_product_code[20] = { };
 static u8 card_revision = 0xFF;
 static u64 card_tid = 0;
 static sf2d_texture *card_icon = NULL;
-static vector<wstring> card_text;
+static vector<string> card_text;
 
 /**
  * Clear the cached icon and text.
@@ -221,16 +221,17 @@ static void gamecardCacheCTR(void)
 	// Check which description to use.
 	if (smdh->titles[lang].longDescription[0]) {
 		// Use the long description.
-		card_text = utf16_nl_to_vwstring(smdh->titles[lang].longDescription, 128);
+		card_text = utf16_nl_to_vstring(smdh->titles[lang].longDescription, 128);
 	} else {
 		// Use the short description.
-		card_text = utf16_nl_to_vwstring(smdh->titles[lang].shortDescription, 64);
+		card_text = utf16_nl_to_vstring(smdh->titles[lang].shortDescription, 64);
 	}
 
 	// Add the publisher.
 	// TODO: Make sure we don't have more than two lines here.
 	smdh->titles[lang].publisher[0x40-1] = 0;
-	card_text.push_back(utf16_to_wstring(smdh->titles[lang].publisher));
+	// FIXME: utf16_to_string().
+	//card_text.push_back(utf16_to_wstring(smdh->titles[lang].publisher));
 
 	// FIXME: Untile the large icon and load it.
 	// TODO: Add RGB565 and RGB555 loading.
@@ -372,7 +373,7 @@ sf2d_texture *gamecardGetIcon(void)
  * Get the game card's banner text.
  * @return Game card banner text, or empty vector if not a TWL card.
  */
-vector<wstring> gamecardGetText(void)
+vector<string> gamecardGetText(void)
 {
 	return card_text;
 }

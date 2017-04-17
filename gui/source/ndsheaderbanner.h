@@ -216,17 +216,17 @@ int grabTID(FILE* ndsFile, char *buf);
  * Get text from an NDS banner.
  * @param ndsBanner NDS banner.
  * @param bnrtitlenum Title number. (aka language)
- * @return Vector containing each line as a wide string. (empty on error)
+ * @return Vector containing each line as a string. (empty on error)
  */
-std::vector<std::wstring> grabText(const sNDSBanner* ndsBanner, int bnrtitlenum);
+std::vector<std::string> grabText(const sNDSBanner* ndsBanner, int bnrtitlenum);
 
 /**
  * Get text from a cached NDS banner.
  * @param binFile Banner file.
  * @param bnrtitlenum Title number. (aka language)
- * @return Vector containing each line as a wide string. (empty on error)
+ * @return Vector containing each line as a string. (empty on error)
  */
-std::vector<std::wstring> grabText(FILE* binFile, int bnrtitlenum);
+std::vector<std::string> grabText(FILE* binFile, int bnrtitlenum);
 
 /**
  * Cache the banner from an NDS file.

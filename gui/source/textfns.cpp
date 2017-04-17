@@ -6,13 +6,14 @@
 
 #include <string>
 #include <vector>
+using std::string;
 using std::vector;
 using std::wstring;
 
 /** UTF-16 **/
 
 /**
- * Convert a UTF-16 string to wchar_t. (internal function
+ * Convert a UTF-16 string to wchar_t. (internal function)
  * @param out_wstr	[out] UTF-32 buffer.
  * @param in_u16str	[in] UTF-16 string.
  * @return Number of characters used in wstr, not including the NULL terminator.
@@ -89,6 +90,30 @@ wstring utf16_to_wstring(const u16 *in_u16str)
 }
 
 /**
+ * Convert a UTF-16 string to wchar_t*.
+ * @param in_u16str UTF-16 string.
+ * @return malloc()'d wchar_t*. (UTF-32) (NOTE: If in_u16str is nullptr, this returns nullptr.)
+ */
+wchar_t *utf16_to_wchar(const u16 *in_u16str)
+{
+	if (!in_u16str) {
+		// No string.
+		return nullptr;
+	}
+
+	// Allocate at least as many UTF-32 units
+	// as there are characters in the string,
+	// plus one for the NULL terminator.
+	int len = 0;
+	for (const u16 *p = in_u16str; *p != 0; p++, len++) { }
+	wchar_t *wstr = (wchar_t*)malloc((len+1) * sizeof(wchar_t));
+
+	// Convert the string.
+	utf16_to_wchar_internal(wstr, in_u16str);
+	return wstr;
+}
+
+/**
  * Convert a UTF-16 string with newlines to a vector of wstrings.
  * @param in_u16str UTF-16 string with newlines.
  * @param len Length of in_u16str.
@@ -156,27 +181,103 @@ vector<wstring> utf16_nl_to_vwstring(const u16 *in_u16str, int len)
 }
 
 /**
- * Convert a UTF-16 string to wchar_t*.
- * @param in_u16str UTF-16 string.
- * @return malloc()'d wchar_t*. (UTF-32) (NOTE: If in_u16str is nullptr, this returns nullptr.)
+ * Convert a UTF-16 string with newlines to a vector of strings.
+ * @param in_u16str UTF-16 string with newlines.
+ * @param len Length of in_str.
+ * @return vector<string>, split on newline boundaries.
  */
-wchar_t *utf16_to_wchar(const u16 *in_u16str)
+vector<string> utf16_nl_to_vstring(const u16 *in_u16str, int len)
 {
-	if (!in_u16str) {
-		// No string.
-		return nullptr;
+	// Buffers for the strings.
+	// Assuming wchar_t is 32-bit.
+	static_assert(sizeof(wchar_t) == 4, "wchar_t is not 32-bit.");
+	vector<string> vec_u8str;
+	vec_u8str.reserve(3);
+	string u8str;
+	u8str.reserve(64);
+
+	for (; *in_u16str != 0 && len > 0; in_u16str++, len--) {
+		// Convert the UTF-16 character to UTF-32.
+		// Special handling is needed only for surrogate pairs.
+		// (TODO: Test surrogate pair handling.)
+		wchar_t wchr;
+		bool has_chr = true;
+		if ((*in_u16str & 0xFC00) == 0xD800) {
+			// High surrogate. (0xD800-0xDBFF)
+			if (len > 2 && (in_u16str[1] & 0xFC00) == 0xDC00) {
+				// Low surrogate. (0xDC00-0xDFFF)
+				// Recombine to get the actual character.
+				wchr = 0x10000;
+				wchr += ((in_u16str[0] & 0x3FF) << 10);
+				wchr +=  (in_u16str[1] & 0x3FF);
+				// Make sure we don't process the low surrogate
+				// on the next iteration.
+				in_u16str++;
+				len--;
+			} else {
+				// Unpaired high surrogate.
+				// Use U+FFFD.
+				u8str += "\xEF\xBF\xBD";
+				has_chr = false;
+			}
+		} else if ((*in_u16str & 0xFC00) == 0xDC00) {
+			// Unpaired low surrogate.
+			// Use U+FFFD.
+			u8str += "\xEF\xBF\xBD";
+			has_chr = false;
+		} else {
+			// Standard UTF-16 character.
+			switch (*in_u16str) {
+				case L'\r':
+					// Skip carriage returns.
+					has_chr = false;
+					break;
+				case L'\n':
+					// Newline.
+					vec_u8str.push_back(u8str);
+					u8str.clear();
+					has_chr = false;
+					break;
+				default:
+					// Add the character.
+					wchr = *in_u16str;
+					break;
+			}
+		}
+
+		if (has_chr) {
+			// Convert to UTF-8;
+			if (wchr <= 0x007F) {
+				// Single byte.
+				u8str += (char)wchr;
+			} else if (wchr <= 0x07FF) {
+				// Two bytes.
+				u8str += (0xC0 | (wchr >> 6));
+				u8str += (0x80 | (wchr & 0x3F));
+			} else if (wchr <= 0xFFFF) {
+				// Three bytes.
+				u8str += (0xE0 | (wchr >> 12));
+				u8str += (0x80 | ((wchr >> 6) & 0x3F));
+				u8str += (0x80 | (wchr & 0x3F));
+			} else if (wchr < 0x10FFFF) {
+				// Four bytes.
+				u8str += (0xF0 | (wchr >> 18));
+				u8str += (0x80 | ((wchr >> 12) & 0x3F));
+				u8str += (0x80 | ((wchr >> 6) & 0x3F));
+				u8str += (0x80 | (wchr & 0x3F));
+			} else {
+				// Invalid. (U+FFFD)
+				u8str += "\xEF\xBF\xBD";
+			}
+		}
 	}
 
-	// Allocate at least as many UTF-32 units
-	// as there are characters in the string,
-	// plus one for the NULL terminator.
-	int len = 0;
-	for (const u16 *p = in_u16str; *p != 0; p++, len++) { }
-	wchar_t *wstr = (wchar_t*)malloc((len+1) * sizeof(wchar_t));
+	// Add the last line if it's not empty.
+	if (!u8str.empty()) {
+		vec_u8str.push_back(u8str);
+	}
 
-	// Convert the string.
-	utf16_to_wchar_internal(wstr, in_u16str);
-	return wstr;
+	return vec_u8str;
 }
 
 /** UTF-8 **/

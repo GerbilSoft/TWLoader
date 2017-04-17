@@ -206,7 +206,7 @@ bool fadein = true;
 bool fadeout = false;
 
 static const char* romsel_filename = " ";
-static vector<wstring> romsel_gameline;	// from banner
+static vector<string> romsel_gameline;	// from banner
 
 static const char* rom = "";		// Selected ROM image.
 std::string sav;		// Associated save file.
@@ -1080,8 +1080,8 @@ static void drawMenuDialogBox(void)
 			const size_t banner_lines = std::min(3U, romsel_gameline.size());
 			for (size_t i = 0; i < banner_lines; i++, y += dy) {
 				// const int text_width = sftd_get_wtext_width(font_b, 16, romsel_gameline[i].c_str());
-				// sftd_draw_wtext(font_b, 72+(240-text_width)/2, y+menudbox_Ypos, RGBA8(0, 0, 0, 255), 16, romsel_gameline[i].c_str());
-				renderText_w(72, y+menudbox_Ypos, 0.60, 0.60, false, romsel_gameline[i].c_str());
+				// sftd_draw_text(font_b, 72+(240-text_width)/2, y+menudbox_Ypos, RGBA8(0, 0, 0, 255), 16, romsel_gameline[i].c_str());
+				renderText(72, y+menudbox_Ypos, 0.60, 0.60, false, romsel_gameline[i].c_str());
 			}
 			// sftd_draw_text(font, 64, 72+menudbox_Ypos, RGBA8(127, 127, 127, 255), 12, romsel_filename.c_str());
 			setTextColor(RGBA8(127, 127, 127, 255));
@@ -2901,8 +2901,8 @@ int main()
 							} else {
 								// Unable to open the banner file.
 								romsel_gameline.clear();
-								romsel_gameline.push_back(latin1_to_wstring("ERROR:"));
-								romsel_gameline.push_back(latin1_to_wstring("Unable to open the cached banner."));
+								romsel_gameline.push_back("ERROR:");
+								romsel_gameline.push_back("Unable to open the cached banner.");
 							}
 							bannertextloaded = true;
 						}
@@ -2911,10 +2911,10 @@ int main()
 							// Print the banner text, center-aligned.
 							const size_t banner_lines = std::min(3U, romsel_gameline.size());
 							for (size_t i = 0; i < banner_lines; i++, y += dy) {
-								// const int text_width = sftd_get_wtext_width(font_b, 12, romsel_gameline[i].c_str());
+								// const int text_width = sftd_get_text_width(font_b, 12, romsel_gameline[i].c_str());
 								const int text_width = 0;
 								setTextColor(RGBA8(0, 0, 0, 255)); // black
-								renderText_w(84+(192-text_width)/2, y, 0.55, 0.55, false, romsel_gameline[i].c_str());
+								renderText(84+(192-text_width)/2, y, 0.55, 0.55, false, romsel_gameline[i].c_str());
 							}
 						}
 					}
@@ -3018,8 +3018,8 @@ int main()
 								} else {
 									// Unable to open the banner file.
 									romsel_gameline.clear();
-									romsel_gameline.push_back(latin1_to_wstring("ERROR:"));
-									romsel_gameline.push_back(latin1_to_wstring("Unable to open the cached banner."));
+									romsel_gameline.push_back("ERROR:");
+									romsel_gameline.push_back("Unable to open the cached banner.");
 								}
 								bannertextloaded = true;
 							}
@@ -3043,11 +3043,11 @@ int main()
 							// Print the banner text, center-aligned.
 							const size_t banner_lines = std::min(3U, romsel_gameline.size());
 							for (size_t i = 0; i < banner_lines; i++, y += dy) {
-								// const int text_width = sftd_get_wtext_width(font_b, 16, romsel_gameline[i].c_str());
+								// const int text_width = sftd_get_text_width(font_b, 16, romsel_gameline[i].c_str());
 								const int text_width = 0;
-								// sftd_draw_wtext(font_b, (320-text_width)/2, y, RGBA8(0, 0, 0, 255), 16, romsel_gameline[i].c_str());
+								// sftd_draw_text(font_b, (320-text_width)/2, y, RGBA8(0, 0, 0, 255), 16, romsel_gameline[i].c_str());
 								setTextColor(RGBA8(0, 0, 0, 255));
-								renderText_w(8, y, 0.75, 0.75, false, romsel_gameline[i].c_str());
+								renderText(8, y, 0.75, 0.75, false, romsel_gameline[i].c_str());
 							}
 
 							if (cursorPosition >= 0 && settings.ui.counter) {
