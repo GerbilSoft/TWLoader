@@ -1460,10 +1460,9 @@ int main()
 		static const char title[] = "Now checking banner data (SD Card)...";
 		char romsel_counter1[16];
 		snprintf(romsel_counter1, sizeof(romsel_counter1), "%d", bnriconnum+1);
-		const char *tempfile = files.at(bnriconnum).c_str();
+		const char *const tempfile = files.at(bnriconnum).c_str();
 
-		wstring tempfile_w = utf8_to_wstring(tempfile);
-		// sftd_draw_wtext(font, 12, 64, RGBA8(0, 0, 0, 255), 12, tempfile_w.c_str());
+		// sftd_draw_text(font, 12, 64, RGBA8(0, 0, 0, 255), 12, tempfile);
 
 		char nds_path[256];
 		snprintf(nds_path, sizeof(nds_path), "sdmc:/%s/%s", settings.ui.romfolder.c_str(), tempfile);
@@ -2052,13 +2051,12 @@ int main()
 								color = RGBA8(255, 255, 255, 255);
 							}
 
-							// Get the current filename and convert it to wstring.
-							const char *filename = (settings.twl.forwarder
+							// Get the current filename.
+							const char *const filename = (settings.twl.forwarder
 									? fcfiles.at(filenum).c_str()
 									: files.at(filenum).c_str());
-							wstring wstr = utf8_to_wstring(filename);
 							setTextColor(color);
-							renderText_w(42, filenameYpos+filenameYmovepos*15, 0.50, 0.50, false, wstr.c_str());
+							renderText(42, filenameYpos+filenameYmovepos*15, 0.50, 0.50, false, filename);
 
 							filenameYpos += 15;
 						}
@@ -2753,13 +2751,12 @@ int main()
 								drawRectangle(0, Ypos-4+filenameYmovepos*39, 320, 40, SET_ALPHA(color_data->color, 127));
 							}
 
-							// Get the current filename and convert it to wstring.
-							const char *filename = (settings.twl.forwarder
+							// Get the current filename.
+							const char *const filename = (settings.twl.forwarder
 									? fcfiles.at(filenum).c_str()
 									: files.at(filenum).c_str());
-							wstring wstr = utf8_to_wstring(filename);
 							setTextColor(RGBA8(255, 255, 255, 255)); // white
-							renderText_w(46, filenameYpos+filenameYmovepos*39, 0.45f, 0.45f, false, wstr.c_str());
+							renderText(46, filenameYpos+filenameYmovepos*39, 0.45f, 0.45f, false, filename);
 
 							if (cursorPosition == filenum)
 								sf2d_draw_texture_part_scale(bnricontexnum, 8-wood_ndsiconscalemovepos, -wood_ndsiconscalemovepos+Ypos+filenameYmovepos*39, bnriconframenum*32, 0, 32, 32, 1.00+wood_ndsiconscalesize, 1.00+wood_ndsiconscalesize);
