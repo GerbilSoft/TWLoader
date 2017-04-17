@@ -1016,8 +1016,6 @@ void downloadBoxArt(void)
 	std::sort(boxart_dl_tids.begin(), boxart_dl_tids.end());
 
 	// Download the boxart.
-	char s_boxart_total[12];
-	snprintf(s_boxart_total, sizeof(s_boxart_total), "%zu", boxart_dl_tids.size());
 	if (logEnabled)	LogFM("DownloadBoxArt.downloading_process", "Downloading missing boxart (Slot-1 Side)");
 	for (size_t boxartnum = 0; boxartnum < boxart_dl_tids.size(); boxartnum++) {
 		static const char title[] = "Downloading missing boxart (Slot-1 side)...";
@@ -1027,19 +1025,19 @@ void downloadBoxArt(void)
 		u32 tid = __builtin_bswap32(boxart_dl_tids[boxartnum]);
 		memcpy(ba_TID, &tid, 4);
 		ba_TID[4] = 0;
-		
-		char str[256] = "";
-		snprintf(str, sizeof(str), "%zu", boxartnum);
-		
+
+		// Status message.
+		char status_msg[40];
+		snprintf(status_msg, sizeof(status_msg), "%zu / %zu",
+			boxartnum, boxart_dl_tids.size());
+
 		// Show the dialog.
 		DialogBoxAppear(title, 0);
 		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
 		sf2d_draw_texture(dialogboxtex, 0, 0);
 		setTextColor(RGBA8(0, 0, 0, 255));
 		renderText(12, 16, 0.5f, 0.5f, false, title);
-		renderText(12, 32, 0.5f, 0.5f, false, str);
-		renderText(39, 32, 0.5f, 0.5f, false, "/");
-		renderText(44, 32, 0.5f, 0.5f, false, s_boxart_total);
+		renderText(12, 32, 0.5f, 0.5f, false, status_msg);
 		renderText(12, 64, 0.5f, 0.5f, false, "Downloading:");
 		renderText(108, 64, 0.5f, 0.5f, false, ba_TID);
 		sf2d_end_frame();
