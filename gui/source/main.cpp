@@ -207,8 +207,7 @@ int fadealpha = 255;
 bool fadein = true;
 bool fadeout = false;
 
-static const char* romsel_filename;
-static wstring romsel_filename_w;	// Unicode filename for display.
+static const char* romsel_filename = " ";
 static vector<wstring> romsel_gameline;	// from banner
 
 static const char* rom = "";		// Selected ROM image.
@@ -1090,9 +1089,9 @@ static void drawMenuDialogBox(void)
 				// sftd_draw_wtext(font_b, 72+(240-text_width)/2, y+menudbox_Ypos, RGBA8(0, 0, 0, 255), 16, romsel_gameline[i].c_str());
 				renderText_w(72, y+menudbox_Ypos, 0.60, 0.60, false, romsel_gameline[i].c_str());
 			}
-			// sftd_draw_wtext(font, 64, 72+menudbox_Ypos, RGBA8(127, 127, 127, 255), 12, romsel_filename_w.c_str());
+			// sftd_draw_text(font, 64, 72+menudbox_Ypos, RGBA8(127, 127, 127, 255), 12, romsel_filename.c_str());
 			setTextColor(RGBA8(127, 127, 127, 255));
-			renderText_w(16, 72+menudbox_Ypos, 0.50, 0.50, false, romsel_filename_w.c_str());
+			renderText(16, 72+menudbox_Ypos, 0.50, 0.50, false, romsel_filename);
 		}
 		
 		const size_t file_count = (settings.twl.forwarder ? fcfiles.size() : files.size());
@@ -2965,18 +2964,14 @@ int main()
 								// if(matching_files.size() == 0){
 									if (fcfiles.size() != 0) {
 										romsel_filename = fcfiles.at(cursorPosition).c_str();
-										romsel_filename_w = utf8_to_wstring(romsel_filename);
 									} else {
 										romsel_filename = " ";
-										romsel_filename_w = utf8_to_wstring(romsel_filename);
 									}
 								/* }else{
 									if (matching_files.size() != 0) {
 										romsel_filename = matching_files.at(storedcursorPosition).c_str();
-										romsel_filename_w = utf8_to_wstring(romsel_filename);
 									} else {
 										romsel_filename = " ";
-										romsel_filename_w = utf8_to_wstring(romsel_filename);
 									}
 								} */
 									snprintf(path, sizeof(path), "%s/%s.bin", fcbnriconfolder, romsel_filename);
@@ -2984,19 +2979,15 @@ int main()
 								// if(matching_files.size() == 0){
 									if (files.size() != 0) {
 										romsel_filename = files.at(cursorPosition).c_str();
-										romsel_filename_w = utf8_to_wstring(romsel_filename);
 									} else {
 										romsel_filename = " ";
-										romsel_filename_w = utf8_to_wstring(romsel_filename);
 									}
 									snprintf(path, sizeof(path), "%s/%s.bin", bnriconfolder, romsel_filename);
 								/* }else {
 									if (matching_files.size() != 0) {
 										romsel_filename = matching_files.at(storedcursorPosition).c_str();
-										romsel_filename_w = utf8_to_wstring(romsel_filename);
 									} else {
 										romsel_filename = " ";
-										romsel_filename_w = utf8_to_wstring(romsel_filename);
 									}
 									snprintf(path, sizeof(path), "%s/%s.bin", bnriconfolder, romsel_filename); */
 								}
@@ -3067,9 +3058,8 @@ int main()
 										} else {
 											snprintf(buf, sizeof(buf), "Slot-1: %s", productCode);
 										}
-										romsel_filename_w = latin1_to_wstring(buf);
 									} else {
-										romsel_filename_w.clear();
+										romsel_filename = " ";
 									}
 								}
 
@@ -3097,29 +3087,23 @@ int main()
 									if(matching_files.size() == 0){
 										if (fcfiles.size() != 0) {
 											romsel_filename = fcfiles.at(storedcursorPosition).c_str();
-											romsel_filename_w = utf8_to_wstring(romsel_filename);
 										} else {
 											romsel_filename = " ";
-											romsel_filename_w = utf8_to_wstring(romsel_filename);
 										}
 									}else{
 										romsel_filename = matching_files.at(storedcursorPosition).c_str();
-										romsel_filename_w = utf8_to_wstring(romsel_filename);
 									}
 									snprintf(path, sizeof(path), "%s/%s.bin", fcbnriconfolder, romsel_filename);
 								} else {
 									if(matching_files.size() == 0){
 										if (files.size() != 0) {
 											romsel_filename = files.at(storedcursorPosition).c_str();
-											romsel_filename_w = utf8_to_wstring(romsel_filename);
 										} else {
 											romsel_filename = " ";
-											romsel_filename_w = utf8_to_wstring(romsel_filename);
 										}
 										snprintf(path, sizeof(path), "%s/%s.bin", bnriconfolder, romsel_filename);
 									}else {
 										romsel_filename = matching_files.at(storedcursorPosition).c_str();
-										romsel_filename_w = utf8_to_wstring(romsel_filename);
 										snprintf(path, sizeof(path), "%s/%s.bin", bnriconfolder, romsel_filename);
 									}									
 								}
@@ -3148,7 +3132,7 @@ int main()
 							//top dialog = 100px tall
 							if (settings.ui.filename) {
 								setTextColor(RGBA8(127, 127, 127, 255));
-								renderText_w(10, 8, 0.50, 0.50, false, romsel_filename_w.c_str());
+								renderText(10, 8, 0.50, 0.50, false, romsel_filename);
 								y = (100-(19*romsel_gameline.size()))/2 + 4;
 								//y = 24; dy = 19;
 								dy = 19;
