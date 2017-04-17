@@ -205,6 +205,7 @@ bool fadein = true;
 bool fadeout = false;
 
 static const char* romsel_filename = " ";
+static char slot1_product_code[48];	// Used instead of romsel_filename for Slot-1.
 static vector<string> romsel_gameline;	// from banner
 
 static const char* rom = "";		// Selected ROM image.
@@ -2949,12 +2950,12 @@ int main()
 									if (!romsel_gameline.empty() && productCode) {
 										// Display the product code and revision.
 										// FIXME: Figure out a way to get the revision for CTR cards.
-										char buf[48];
 										if (gamecardGetType() != CARD_TYPE_CTR) {
-											snprintf(buf, sizeof(buf), "Slot-1: %s, Rev.%02u", productCode, gamecardGetRevision());
+											snprintf(slot1_product_code, sizeof(slot1_product_code), "Slot-1: %s, Rev.%02u", productCode, gamecardGetRevision());
 										} else {
-											snprintf(buf, sizeof(buf), "Slot-1: %s", productCode);
+											snprintf(slot1_product_code, sizeof(slot1_product_code), "Slot-1: %s", productCode);
 										}
+										romsel_filename = slot1_product_code;
 									} else {
 										romsel_filename = " ";
 									}
