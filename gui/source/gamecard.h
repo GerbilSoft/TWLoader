@@ -80,6 +80,6 @@ sf2d_texture *gamecardGetIcon(void);
  * Get the game card's banner text.
  * @return Game card banner text, or empty vector if not a TWL card.
  */
-std::vector<std::wstring> gamecardGetText(void);
+std::vector<std::string> gamecardGetText(void);
 
 #endif /* TWLOADER_GAMECARD_H */
