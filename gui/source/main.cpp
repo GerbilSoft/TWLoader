@@ -1063,6 +1063,7 @@ static int gamesettings_cursorPosition = 0;
  */
 static void drawMenuDialogBox(void)
 {
+	// TODO: Fonts need to be shrunken...
 	drawRectangle(0, 0, 320, 240, RGBA8(0, 0, 0, menudbox_bgalpha)); // Fade in/out effect
 	sf2d_draw_texture(dialogboxtex, 0, menudbox_Ypos);
 	sf2d_draw_texture(dboxtex_buttonback, 233, menudbox_Ypos+193);
@@ -1079,9 +1080,8 @@ static void drawMenuDialogBox(void)
 			// Print the banner text, center-aligned.
 			const size_t banner_lines = std::min(3U, romsel_gameline.size());
 			for (size_t i = 0; i < banner_lines; i++, y += dy) {
-				// const int text_width = sftd_get_wtext_width(font_b, 16, romsel_gameline[i].c_str());
-				// sftd_draw_text(font_b, 72+(240-text_width)/2, y+menudbox_Ypos, RGBA8(0, 0, 0, 255), 16, romsel_gameline[i].c_str());
-				renderText(72, y+menudbox_Ypos, 0.60, 0.60, false, romsel_gameline[i].c_str());
+				const float text_width = measureTextWidth(0.60f, 0.60f, romsel_gameline[i].c_str());
+				renderText(72+(240-text_width)/2, y+menudbox_Ypos, 0.60f, 0.60f, false, romsel_gameline[i].c_str());
 			}
 			// sftd_draw_text(font, 64, 72+menudbox_Ypos, RGBA8(127, 127, 127, 255), 12, romsel_filename.c_str());
 			setTextColor(RGBA8(127, 127, 127, 255));
@@ -1156,21 +1156,17 @@ static void drawMenuDialogBox(void)
 
 			// Draw the title.
 			int y = menudbox_Ypos + buttons[i].y + ((34 - h) / 2);
-			// int w = sftd_get_wtext_width(font, 12, title);
-			int w = 0;
-			// int x = ((132 - w) / 2) + buttons[i].x;
-			int x = ((2 - w) / 2) + buttons[i].x;
+			float w = measureTextWidth(0.50f, 0.50f, title);
+			int x = ((132 - w) / 2) + buttons[i].x;
 			setTextColor(RGBA8(0, 0, 0, 255));
-			renderText(x, y, 0.50, 0.50, false, title);
+			renderText(x, y, 0.50f, 0.50f, false, title);
 			y += 16;
 
 			// Draw the value.
 			if (i < 3) {
-				// w = sftd_get_wtext_width(font, 12, value_desc);
-				w = 0;
-				// x = ((132 - w) / 2) + buttons[i].x;
-				x = ((2 - w) / 2) + buttons[i].x;
-				renderText(x, y, 0.50, 0.50, false, value_desc);
+				w = measureTextWidth(0.50f, 0.50f, value_desc);
+				x = ((132 - w) / 2) + buttons[i].x;
+				renderText(x, y, 0.50f, 0.50f, false, value_desc);
 			} else if (i == 4) {
 				// Show the RGB value.
 				char rgb_str[32];
@@ -1178,17 +1174,15 @@ static void drawMenuDialogBox(void)
 					settings.pergame.red,
 					settings.pergame.green,
 					settings.pergame.blue);
-				// w = sftd_get_text_width(font, 12, rgb_str);
-				w = 0;
-				// x = ((132 - w) / 2) + buttons[i].x;
-				x = ((2 - w) / 2) + buttons[i].x;
+				w = measureTextWidth(0.50f, 0.50f, rgb_str);
+				x = ((132 - w) / 2) + buttons[i].x;
 
 				// Print the RGB value using its color.
 				const u32 color = RGBA8(settings.pergame.red,
 					settings.pergame.green,
 					settings.pergame.blue, 255);
 				setTextColor(color);
-				renderText(x, y, 0.50, 0.50, false, rgb_str);
+				renderText(x, y, 0.50f, 0.50f, false, rgb_str);
 			}
 		}
 	} else {
@@ -1228,19 +1222,15 @@ static void drawMenuDialogBox(void)
 			// NOTE: Button texture size is 132x34.
 			int y = menudbox_Ypos + buttons[i].y + ((34 - h) / 2);
 			if (title) {
-				// const int w = sftd_get_wtext_width(font, 12, title);
-				const int w = 0;
-				// const int x = ((132 - w) / 2) + buttons[i].x;
-				const int x = ((2 - w) / 2) + buttons[i].x;
-				renderText(x, y, 0.50, 0.50, false, title);
+				const float w = measureTextWidth(0.50f, 0.50f, title);
+				const int x = ((132 - w) / 2) + buttons[i].x;
+				renderText(x, y, 0.50f, 0.50f, false, title);
 				y += 16;
 			}
 			if (value_desc) {
-				// const int w = sftd_get_wtext_width(font, 12, value_desc);
-				const int w = 0;
-				// const int x = ((132 - w) / 2) + buttons[i].x;
-				const int x = ((2 - w) / 2) + buttons[i].x;
-				renderText(x, y, 0.50, 0.50, false, value_desc);
+				const float w = measureTextWidth(0.50f, 0.50f, value_desc);
+				const int x = ((132 - w) / 2) + buttons[i].x;
+				renderText(x, y, 0.50f, 0.50f, false, value_desc);
 			}
 		}
 	}
@@ -2162,16 +2152,16 @@ int main()
 									sf2d_draw_texture_scale_blend(slot1boxarttex, offset3D[topfb].boxart+boxartXpos+boxartXmovepos, 264, 1, -0.75, SET_ALPHA(color_data->color, 0xC0)); // Draw box art's reflection
 								}
 							} else {
+								// FIXME: Not implemented...
 								// int text_width = sftd_get_text_width(font, 12, noromtext1);
-								int text_width = 0;
 								// sftd_draw_textf(font, offset3D[topfb].boxart+((400-text_width)/2), 96, RGBA8(255, 255, 255, 255), 12, noromtext1);
 								// text_width = sftd_get_text_width(font, 12, noromtext2);
 								// sftd_draw_textf(font, offset3D[topfb].boxart+((400-text_width)/2), 112, RGBA8(255, 255, 255, 255), 12, noromtext2);
 							}
 						} else {
 							if (settings.twl.forwarder && pagenum == 0) {
+								// FIXME: Not implemented...
 								// int text_width = sftd_get_text_width(font, 12, noromtext1);
-								int text_width = 0;
 								// sftd_draw_textf(font, offset3D[topfb].boxart+((400-text_width)/2), 96, RGBA8(255, 255, 255, 255), 12, noromtext1);
 								// text_width = sftd_get_text_width(font, 12, noromtext2);
 								// sftd_draw_textf(font, offset3D[topfb].boxart+((400-text_width)/2), 112, RGBA8(255, 255, 255, 255), 12, noromtext2);
@@ -2803,29 +2793,23 @@ int main()
 							drawRectangle(12, 77, 92, 91, SET_ALPHA(color_data->color, 255));
 							sf2d_draw_texture_part(iconstex, 14, 79, 14, 79, 88, 87);
 							static const char selectiontext[] = "Games";
-							// const int text_width = sftd_get_text_width(font, 14, selectiontext);
-							const int text_width = 0;
-							// sftd_draw_textf(font, (320-text_width)/2, 220, RGBA8(255, 255, 255, 255), 14, selectiontext);
+							const float text_width = measureTextWidth(0.60f, 0.60f, selectiontext);
 							setTextColor(RGBA8(255, 255, 255, 255));
-							renderText(128, 220, 0.60f, 0.60f, false, selectiontext);
+							renderText((320-text_width)/2, 220, 0.60f, 0.60f, false, selectiontext);
 						} else 	if (r4menu_cursorPosition == 1) {
 							drawRectangle(115, 77, 92, 91, SET_ALPHA(color_data->color, 255));
 							sf2d_draw_texture_part(iconstex, 117, 79, 117, 79, 88, 87);
 							static const char selectiontext[] = "Launch Slot-1 card";
-							// const int text_width = sftd_get_text_width(font, 14, selectiontext);
-							const int text_width = 0;
-							// sftd_draw_textf(font, (320-text_width)/2, 220, RGBA8(255, 255, 255, 255), 14, selectiontext);
+							const float text_width = measureTextWidth(0.60f, 0.60f, selectiontext);
 							setTextColor(RGBA8(255, 255, 255, 255));
-							renderText(96, 220, 0.60f, 0.60f, false, selectiontext);
+							renderText((320-text_width)/2, 220, 0.60f, 0.60f, false, selectiontext);
 						} else 	if (r4menu_cursorPosition == 2) {
 							drawRectangle(217, 77, 92, 91, SET_ALPHA(color_data->color, 255));
 							sf2d_draw_texture_part(iconstex, 219, 79, 219, 79, 88, 87);
 							static const char selectiontext[] = "Start GBARunner2";
-							// const int text_width = sftd_get_text_width(font, 14, selectiontext);
-							const int text_width = 0;
-							// sftd_draw_textf(font, (320-text_width)/2, 220, RGBA8(255, 255, 255, 255), 14, selectiontext);
+							const float text_width = measureTextWidth(0.60f, 0.60f, selectiontext);
 							setTextColor(RGBA8(255, 255, 255, 255));
-							renderText(96, 220, 0.60f, 0.60f, false, selectiontext);
+							renderText((320-text_width)/2, 220, 0.60f, 0.60f, false, selectiontext);
 						}
 						setTextColor(RGBA8(255, 255, 255, 255));
 						DrawDate(2, 220, 0.60f, 0.60f, false);
@@ -2911,10 +2895,9 @@ int main()
 							// Print the banner text, center-aligned.
 							const size_t banner_lines = std::min(3U, romsel_gameline.size());
 							for (size_t i = 0; i < banner_lines; i++, y += dy) {
-								// const int text_width = sftd_get_text_width(font_b, 12, romsel_gameline[i].c_str());
-								const int text_width = 0;
+								const float text_width = measureTextWidth(0.55f, 0.55f, romsel_gameline[i].c_str());
 								setTextColor(RGBA8(0, 0, 0, 255)); // black
-								renderText(84+(192-text_width)/2, y, 0.55, 0.55, false, romsel_gameline[i].c_str());
+								renderText(84+(192-text_width)/2, y, 0.55f, 0.55f, false, romsel_gameline[i].c_str());
 							}
 						}
 					}
@@ -2930,17 +2913,16 @@ int main()
 						bool drawBannerText = true;
 						if (cursorPosition == -2) {
 							const char *const curn2text = TR(STR_SETTINGS_TEXT);
-							// const int text_width = sftd_get_wtext_width(font_b, 18, curn2text);
-							const int text_width = 0;
+							const float text_width = measureTextWidth(0.70f, 0.70f, curn2text);
 							setTextColor(RGBA8(0, 0, 0, 255)); // black
-							renderText((320-text_width)/2, 38, 0.70, 0.70, false, curn2text);
+							renderText((320-text_width)/2, 38, 0.70f, 0.70f, false, curn2text);
 							drawBannerText = false;
 						} else if (cursorPosition == -1) {
 							if (settings.twl.forwarder) {
-								// const int text_width = sftd_get_text_width(font_b, 18, add_games_text);
-								const int text_width = 0;
+								static const char add_games_text[] = "Add Games";
+								const float text_width = measureTextWidth(0.70f, 0.70f, add_games_text);
 								setTextColor(RGBA8(0, 0, 0, 255)); // black
-								renderText((320-text_width)/2, 38, 0.70, 0.70, false, "Add Games");
+								renderText((320-text_width)/2, 38, 0.70f, 0.70f, false, add_games_text);
 								drawBannerText = false;
 							} else {
 								// Get the text from the Slot 1 cartridge.
@@ -2971,10 +2953,9 @@ int main()
 										// No game card is inserted.
 										msg = TR(STR_NO_CARTRIDGE);
 									}
-									// const int text_width = sftd_get_wtext_width(font_b, 18, msg);
-									const int text_width = 0;
+									const float text_width = measureTextWidth(0.70f, 0.70f, msg);
 									setTextColor(RGBA8(0, 0, 0, 255)); // black
-									renderText((320-text_width)/2, 38, 0.70, 0.70, false, msg);
+									renderText((320-text_width)/2, 38, 0.70f, 0.70f, false, msg);
 									drawBannerText = false;
 								}
 							}
@@ -3043,11 +3024,9 @@ int main()
 							// Print the banner text, center-aligned.
 							const size_t banner_lines = std::min(3U, romsel_gameline.size());
 							for (size_t i = 0; i < banner_lines; i++, y += dy) {
-								// const int text_width = sftd_get_text_width(font_b, 16, romsel_gameline[i].c_str());
-								const int text_width = 0;
-								// sftd_draw_text(font_b, (320-text_width)/2, y, RGBA8(0, 0, 0, 255), 16, romsel_gameline[i].c_str());
+								const float text_width = measureTextWidth(0.75f, 0.75f, romsel_gameline[i].c_str());
 								setTextColor(RGBA8(0, 0, 0, 255));
-								renderText(8, y, 0.75, 0.75, false, romsel_gameline[i].c_str());
+								renderText((320-text_width)/2, y, 0.75f, 0.75f, false, romsel_gameline[i].c_str());
 							}
 
 							if (cursorPosition >= 0 && settings.ui.counter) {
@@ -3076,12 +3055,11 @@ int main()
 
 					if(!is3DSX) {
 						const char *const home_text = TR(STR_RETURN_TO_HOME_MENU);
-						// const int home_width = sftd_get_wtext_width(font, 13, home_text) + 16;
-						const int home_width = 144+16;
+						const float home_width = measureTextWidth(0.50f, 0.50f, home_text) + 16;
 						const int home_x = (320-home_width)/2;
 						sf2d_draw_texture(homeicontex, home_x, 219); // Draw HOME icon
 						setTextColor(RGBA8(0, 0, 0, 255));
-						renderText(home_x+20, 220, 0.50, 0.50, false, home_text);
+						renderText(home_x+20, 220, 0.50f, 0.50f, false, home_text);
 					}
 
 					if (pagenum == 0) {
@@ -3186,18 +3164,14 @@ int main()
 								const char *const start_text = TR(STR_START);
 								if (settings.ui.iconsize) {
 									sf2d_draw_texture_scale(startbordertex, 120+startbordermovepos, 108+startbordermovepos, startborderscalesize+0.25, startborderscalesize+0.25);
-									// const int start_width = sftd_get_wtext_width(font_b, 16, start_text);
-									const int start_width = 0;
-									// sftd_draw_wtext(font_b, (320-start_width)/2, 183, RGBA8(255, 255, 255, 255), 16, start_text);
+									const float start_width = measureTextWidth(0.60f, 0.60f, start_text);
 									setTextColor(RGBA8(255, 255, 255, 255));
-									renderText(136, 184, 0.60, 0.60, false, start_text);
+									renderText((320-start_width)/2, 184, 0.60f, 0.60f, false, start_text);
 								} else {
 									sf2d_draw_texture_scale(startbordertex, 128+startbordermovepos, 116+startbordermovepos, startborderscalesize, startborderscalesize);
-									// const int start_width = sftd_get_wtext_width(font_b, 12, start_text);
-									const int start_width = 0;
-									// sftd_draw_wtext(font_b, (320-start_width)/2, 177, RGBA8(255, 255, 255, 255), 12, start_text);
+									const float start_width = measureTextWidth(0.50f, 0.50f, start_text);
 									setTextColor(RGBA8(255, 255, 255, 255));
-									renderText(140, 177, 0.50, 0.50, false, start_text);
+									renderText((320-start_width)/2, 177, 0.50f, 0.50f, false, start_text);
 								}
 							}
 						}
